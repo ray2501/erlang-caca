@@ -1,0 +1,14 @@
+{application, caca,
+ [{description, "Erlang bindings for libcaca"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications,
+   [kernel,
+    stdlib
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {licenses, ["MIT"]},
+  {links, ["https://github.com/ray2501/erlang-caca"]}
+ ]}.
