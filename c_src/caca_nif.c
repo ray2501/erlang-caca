@@ -154,10 +154,40 @@ get_import_list(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     return mk_error(env, "error");
 }
 
+static ERL_NIF_TERM
+get_font_list(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    ERL_NIF_TERM erl_list;
+    char const * const * list = NULL;
+    int count = 0;
+
+    if(argc != 0)
+    {
+        return enif_make_badarg(env);
+    }
+
+    list = caca_get_font_list();
+    if(!list) return mk_error(env, "return_error");
+
+    if (list) {
+        erl_list = enif_make_list(env, 0);
+        for(count = 0; list[count] != NULL; count ++) {
+            erl_list = enif_make_list_cell(env,
+                                           enif_make_string(env, list[count], ERL_NIF_LATIN1),
+                                           erl_list);
+        }
+
+        return erl_list;
+    }
+
+    return mk_error(env, "error");
+}
+
 static ErlNifFunc nif_funcs[] = {
     {"get_display_driver_list", 0, get_display_driver_list},
     {"get_export_list", 0, get_export_list},
     {"get_import_list", 0, get_import_list},
+    {"get_font_list", 0, get_font_list},
 };
 
 ERL_NIF_INIT(caca, nif_funcs, &load, &reload, NULL, NULL)

@@ -6,6 +6,7 @@
 
 %% API exports
 -export([get_display_driver_list/0, get_export_list/0, get_import_list/0]).
+-export([get_font_list/0]).
 -on_load(init/0).
 
 -define(APPNAME, caca).
@@ -31,6 +32,12 @@ get_export_list() ->
 -spec get_import_list() -> Map::#{} | {error, any()}.
 
 get_import_list() ->
+    not_loaded(?LINE).
+
+%% @doc Get available fonts
+-spec get_font_list() -> list(string) | {error, any()}.
+
+get_font_list() ->
     not_loaded(?LINE).
 
 %%====================================================================
