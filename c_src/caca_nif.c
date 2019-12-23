@@ -9,7 +9,8 @@ static ErlNifResourceType* RES_TYPE;
 
 typedef struct {
     caca_canvas_t *canvas;
-} CANVAS;
+    caca_display_t *display;
+} CACA;
 
 ERL_NIF_TERM
 mk_atom(ErlNifEnv* env, const char* atom)
@@ -218,7 +219,7 @@ create_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     caca_canvas_t *canvas = NULL;
     ERL_NIF_TERM ret;
     int width = 0, height = 0;
-    CANVAS* res;
+    CACA* res;
 
     if(argc != 2)
     {
@@ -242,9 +243,10 @@ create_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     canvas = caca_create_canvas(width, height);
     if(!canvas) return mk_error(env, "error");
 
-    res = enif_alloc_resource(RES_TYPE, sizeof(CANVAS));
+    res = enif_alloc_resource(RES_TYPE, sizeof(CACA));
     if(res == NULL) return mk_error(env, "alloc_error");
     res->canvas = NULL;
+    res->display = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -257,7 +259,7 @@ create_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 static ERL_NIF_TERM
 free_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
-    CANVAS *res;
+    CACA *res;
 
     if(argc != 1)
     {
@@ -269,10 +271,75 @@ free_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
+    // If it is not NULL, then free it.
     if(res->canvas) {
         caca_free_canvas (res->canvas);
         res->canvas = NULL;
         assert(res->canvas == NULL);
+    }
+
+    return mk_atom(env, "ok");
+}
+
+
+static ERL_NIF_TERM
+create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    caca_display_t *display = NULL;
+    ERL_NIF_TERM ret;
+    CACA* can;
+    CACA* res;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &can))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!can->canvas) {
+        return enif_make_badarg(env);
+    }
+
+    display = caca_create_display(can->canvas);
+    if(!display) return mk_error(env, "error");
+
+    res = enif_alloc_resource(RES_TYPE, sizeof(CACA));
+    if(res == NULL) return mk_error(env, "alloc_error");
+    res->canvas = NULL;
+    res->display = NULL;
+
+    ret = enif_make_resource(env, res);
+    enif_release_resource(res);
+
+    res->display = display;
+
+    return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
+}
+
+static ERL_NIF_TERM
+free_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->display) {
+        caca_free_display (res->display);
+        res->display = NULL;
+        assert(res->display == NULL);
     }
 
     return mk_atom(env, "ok");
@@ -286,6 +353,8 @@ static ErlNifFunc nif_funcs[] = {
     {"rand", 2, erand},
     {"create_canvas", 2, create_canvas},
     {"free_canvas", 1, free_canvas},
+    {"create_display", 1, create_display},
+    {"free_display", 1, free_display},
 };
 
 ERL_NIF_INIT(caca, nif_funcs, &load, &reload, NULL, NULL)
