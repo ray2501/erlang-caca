@@ -7,6 +7,10 @@ ERL_NIF_TERM mk_error(ErlNifEnv* env, const char* mesg);
 
 static ErlNifResourceType* RES_TYPE;
 
+typedef struct {
+    caca_canvas_t *canvas;
+} CANVAS;
+
 ERL_NIF_TERM
 mk_atom(ErlNifEnv* env, const char* atom)
 {
@@ -208,12 +212,80 @@ erand(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     return enif_make_int(env, result);
 }
 
+static ERL_NIF_TERM
+create_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    caca_canvas_t *canvas = NULL;
+    ERL_NIF_TERM ret;
+    int width = 0, height = 0;
+    CANVAS* res;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[0], &width))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &height))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(width < 0 || height < 0) {
+        return enif_make_badarg(env);
+    }
+
+    canvas = caca_create_canvas(width, height);
+    if(!canvas) return mk_error(env, "error");
+
+    res = enif_alloc_resource(RES_TYPE, sizeof(CANVAS));
+    if(res == NULL) return mk_error(env, "alloc_error");
+    res->canvas = NULL;
+
+    ret = enif_make_resource(env, res);
+    enif_release_resource(res);
+
+    res->canvas = canvas;
+
+    return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
+}
+
+static ERL_NIF_TERM
+free_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CANVAS *res;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_free_canvas (res->canvas);
+        res->canvas = NULL;
+        assert(res->canvas == NULL);
+    }
+
+    return mk_atom(env, "ok");
+}
+
 static ErlNifFunc nif_funcs[] = {
     {"get_display_driver_list", 0, get_display_driver_list},
     {"get_export_list", 0, get_export_list},
     {"get_import_list", 0, get_import_list},
     {"get_font_list", 0, get_font_list},
     {"rand", 2, erand},
+    {"create_canvas", 2, create_canvas},
+    {"free_canvas", 1, free_canvas},
 };
 
 ERL_NIF_INIT(caca, nif_funcs, &load, &reload, NULL, NULL)
