@@ -22,3 +22,14 @@ create_display_test() ->
     ?assertEqual(ok, caca:free_display(D)),
     ?assertEqual(ok, caca:free_canvas(R)).
 
+create_display_with_driver_fail_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    ?_assertException(error, function_clause, caca:create_display_with_driver(R, 1)),
+    ?assertEqual(ok, caca:free_canvas(R)).
+
+create_display_with_driver_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display_with_driver(R, "ncurses"),
+    ?assertEqual(ok, caca:free_display(D)),
+    ?assertEqual(ok, caca:free_canvas(R)).
+

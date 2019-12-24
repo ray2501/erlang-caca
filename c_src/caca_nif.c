@@ -1,4 +1,5 @@
 #include "erl_nif.h"
+#include <string.h>
 #include <assert.h>
 #include <caca.h>
 
@@ -321,6 +322,71 @@ create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+create_display_with_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    char *buffer = NULL;
+    unsigned int length = 0;
+    caca_display_t *display = NULL;
+    ERL_NIF_TERM ret;
+    CACA* can;
+    CACA* res;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &can))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!can->canvas) {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    display = caca_create_display(can->canvas);
+    if(!display) {
+        if(buffer) free(buffer);
+        return mk_error(env, "function_error");
+    }
+
+    res = enif_alloc_resource(RES_TYPE, sizeof(CACA));
+    if(res == NULL) {
+        if(buffer) free(buffer);
+        return mk_error(env, "alloc_error");
+    }
+    res->canvas = NULL;
+    res->display = NULL;
+
+    ret = enif_make_resource(env, res);
+    enif_release_resource(res);
+
+    res->display = display;
+
+    if(buffer) free(buffer);
+    return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
+}
+
+static ERL_NIF_TERM
 free_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -354,6 +420,7 @@ static ErlNifFunc nif_funcs[] = {
     {"create_canvas", 2, create_canvas},
     {"free_canvas", 1, free_canvas},
     {"create_display", 1, create_display},
+    {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
 };
 

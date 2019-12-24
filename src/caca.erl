@@ -8,7 +8,7 @@
 -export([get_display_driver_list/0, get_export_list/0, get_import_list/0]).
 -export([get_font_list/0, rand/2]).
 -export([create_canvas/2, free_canvas/1]).
--export([create_display/1, free_display/1]).
+-export([create_display/1, create_display_with_driver/2, free_display/1]).
 -on_load(init/0).
 
 -define(APPNAME, caca).
@@ -65,6 +65,12 @@ free_canvas(_) ->
 -spec create_display(Canvas::reference()) -> {ok, reference()} | {error, any()}.
 
 create_display(_) ->
+    not_loaded(?LINE).
+
+%% @doc Attach a specific caca graphical context to a caca canvas
+-spec create_display_with_driver(Canvas::reference(), Driver::string()) -> {ok, reference()} | {error, any()}.
+
+create_display_with_driver(_, _) ->
     not_loaded(?LINE).
 
 %% @doc Detach a caca graphical context from a caca backend context
