@@ -283,6 +283,50 @@ free_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+set_canvas_size(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int width = 0, height = 0;
+    int result = 0;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &width))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &height))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(width < 0 || height < 0) {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        result = caca_set_canvas_size(res->canvas, width, height);
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 get_canvas_width(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -473,6 +517,7 @@ static ErlNifFunc nif_funcs[] = {
     {"rand", 2, erand},
     {"create_canvas", 2, create_canvas},
     {"free_canvas", 1, free_canvas},
+    {"set_canvas_size", 3, set_canvas_size},
     {"get_canvas_width", 1, get_canvas_width},
     {"get_canvas_height", 1, get_canvas_height},
     {"create_display", 1, create_display},

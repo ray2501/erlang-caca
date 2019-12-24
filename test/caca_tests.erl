@@ -13,6 +13,13 @@ create_canvas_test() ->
     ?assertEqual(0, caca:get_canvas_height(R)),
     ?assertEqual(ok, caca:free_canvas(R)).
 
+set_canvas_size_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    ?assertEqual(ok, caca:set_canvas_size(R, 80, 40)),
+    ?assertEqual(80, caca:get_canvas_width(R)),
+    ?assertEqual(40, caca:get_canvas_height(R)),
+    ?assertEqual(ok, caca:free_canvas(R)).
+
 create_display_fail_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     ?_assertException(error, function_clause, caca:create_display(1)),
