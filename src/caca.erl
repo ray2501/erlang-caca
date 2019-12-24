@@ -8,6 +8,7 @@
 -export([get_display_driver_list/0, get_export_list/0, get_import_list/0]).
 -export([get_font_list/0, rand/2]).
 -export([create_canvas/2, free_canvas/1]).
+-export([get_canvas_width/1, get_canvas_height/1]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -on_load(init/0).
 
@@ -60,6 +61,17 @@ create_canvas(_, _) ->
 free_canvas(_) ->
     not_loaded(?LINE).
 
+%% @doc Get the canvas width
+-spec get_canvas_width(Canvas::reference()) -> integer() | {error, any()}.
+
+get_canvas_width(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the canvas height
+-spec get_canvas_height(Canvas::reference()) -> integer() | {error, any()}.
+
+get_canvas_height(_) ->
+    not_loaded(?LINE).
 
 %% @doc Attach a caca graphical context to a caca canvas
 -spec create_display(Canvas::reference()) -> {ok, reference()} | {error, any()}.
