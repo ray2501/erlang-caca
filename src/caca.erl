@@ -9,6 +9,7 @@
 -export([get_font_list/0, rand/2]).
 -export([create_canvas/2, free_canvas/1]).
 -export([set_canvas_size/3, get_canvas_width/1, get_canvas_height/1]).
+-export([gotoxy/3, wherex/1, wherey/1]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -on_load(init/0).
 
@@ -78,6 +79,26 @@ get_canvas_width(_) ->
 -spec get_canvas_height(Canvas::reference()) -> integer() | {error, any()}.
 
 get_canvas_height(_) ->
+    not_loaded(?LINE).
+
+
+%% @doc Set cursor position
+-spec gotoxy(Canvas::reference(), X::integer(), Y::integer()) -> 
+    ok | {error, any()}.
+
+gotoxy(_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get X cursor position
+-spec wherex(Canvas::reference()) -> integer() | {error, any()}.
+
+wherex(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get Y cursor position
+-spec wherey(Canvas::reference()) -> integer() | {error, any()}.
+
+wherey(_) ->
     not_loaded(?LINE).
 
 %% @doc Attach a caca graphical context to a caca canvas

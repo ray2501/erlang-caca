@@ -380,6 +380,95 @@ get_canvas_height(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     return mk_error(env, "error");
 }
 
+static ERL_NIF_TERM
+gotoxy(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        caca_gotoxy(res->canvas, x, y);
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+wherex(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        x = caca_wherex(res->canvas);
+        ret = enif_make_int(env, x);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+wherey(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int y = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        y = caca_wherey(res->canvas);
+        ret = enif_make_int(env, y);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
 
 static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
@@ -520,6 +609,9 @@ static ErlNifFunc nif_funcs[] = {
     {"set_canvas_size", 3, set_canvas_size},
     {"get_canvas_width", 1, get_canvas_width},
     {"get_canvas_height", 1, get_canvas_height},
+    {"gotoxy", 3, gotoxy},
+    {"wherex", 1, wherex},
+    {"wherey", 1, wherey},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
