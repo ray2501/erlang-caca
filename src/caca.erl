@@ -9,8 +9,9 @@
 -export([get_font_list/0, rand/2]).
 -export([create_canvas/2, free_canvas/1]).
 -export([set_canvas_size/3, get_canvas_width/1, get_canvas_height/1]).
--export([gotoxy/3, wherex/1, wherey/1]).
+-export([gotoxy/3, wherex/1, wherey/1, put_char/4, get_char/3]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
+-export([refresh_display/1]).
 -on_load(init/0).
 
 -define(APPNAME, caca).
@@ -81,7 +82,6 @@ get_canvas_width(_) ->
 get_canvas_height(_) ->
     not_loaded(?LINE).
 
-
 %% @doc Set cursor position
 -spec gotoxy(Canvas::reference(), X::integer(), Y::integer()) -> 
     ok | {error, any()}.
@@ -101,6 +101,18 @@ wherex(_) ->
 wherey(_) ->
     not_loaded(?LINE).
 
+%% @doc Print an ASCII or Unicode character
+-spec put_char(Canvas::reference(), X::integer(), Y::integer(), Char::char()) -> integer() | {error, any()}.
+
+put_char(_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the Unicode character at the given coordinates
+-spec get_char(Canvas::reference(), X::integer(), Y::integer()) -> char() | {error, any()}.
+
+get_char(_,_,_) ->
+    not_loaded(?LINE).
+
 %% @doc Attach a caca graphical context to a caca canvas
 -spec create_display(Canvas::reference()) -> {ok, reference()} | {error, any()}.
 
@@ -117,6 +129,12 @@ create_display_with_driver(_, _) ->
 -spec free_display(Display::reference()) -> ok | {error, any()}.
 
 free_display(_) ->
+    not_loaded(?LINE).
+
+%% @doc Flush pending changes and redraw the screen
+-spec refresh_display(Display::reference()) -> ok | {error, any()}.
+
+refresh_display(_) ->
     not_loaded(?LINE).
 
 %%====================================================================

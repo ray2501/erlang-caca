@@ -471,6 +471,89 @@ wherey(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+put_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0;
+    uint32_t mychar = 0;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 4)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[3], &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        result = caca_put_char(res->canvas, x, y, mychar);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0;
+    uint32_t mychar = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        mychar = caca_get_char(res->canvas, x, y);
+        ret = enif_make_uint(env, mychar);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -598,6 +681,30 @@ free_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     return mk_atom(env, "ok");
 }
 
+static ERL_NIF_TERM
+refresh_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->display) {
+        caca_refresh_display (res->display);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
 static ErlNifFunc nif_funcs[] = {
     {"get_display_driver_list", 0, get_display_driver_list},
     {"get_export_list", 0, get_export_list},
@@ -612,9 +719,12 @@ static ErlNifFunc nif_funcs[] = {
     {"gotoxy", 3, gotoxy},
     {"wherex", 1, wherex},
     {"wherey", 1, wherey},
+    {"put_char", 4, put_char},
+    {"get_char", 3, get_char},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
+    {"refresh_display", 1, refresh_display},
 };
 
 ERL_NIF_INIT(caca, nif_funcs, &load, &reload, NULL, NULL)
