@@ -601,6 +601,54 @@ set_color_ansi(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+set_color_argb(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int fg = 0, bg = 0;
+    int result = 0;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &fg))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (fg < 0 || fg > 0xffff) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &bg))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (bg < 0 || bg > 0xffff) {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        result = caca_set_color_argb(res->canvas, (uint16_t) fg, (uint16_t) bg);
+        if (result < 0) {
+            return mk_error(env, "alloc_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -769,6 +817,7 @@ static ErlNifFunc nif_funcs[] = {
     {"put_char", 4, put_char},
     {"get_char", 3, get_char},
     {"set_color_ansi", 3, set_color_ansi},
+    {"set_color_argb", 3, set_color_argb},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
