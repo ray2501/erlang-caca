@@ -10,7 +10,7 @@
 -export([create_canvas/2, free_canvas/1]).
 -export([set_canvas_size/3, get_canvas_width/1, get_canvas_height/1]).
 -export([gotoxy/3, wherex/1, wherey/1, put_char/4, get_char/3]).
--export([set_color_ansi/3, set_color_argb/3]).
+-export([set_color_ansi/3, set_color_argb/3, clear_canvas/1]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -export([refresh_display/1]).
 -on_load(init/0).
@@ -120,10 +120,16 @@ get_char(_,_,_) ->
 set_color_ansi(_,_,_) ->
     not_loaded(?LINE).
 
-%% @doc Set the default colour pair for text (ANSI version)
+%% @doc Set the default colour pair for text (truecolor version)
 -spec set_color_argb(Canvas::reference(), Fg::integer(), Bg::integer()) -> ok | {error, any()}.
 
 set_color_argb(_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Clear the canvas
+-spec clear_canvas(Canvas::reference()) -> ok | {error, any()}.
+
+clear_canvas(_) ->
     not_loaded(?LINE).
 
 %% @doc Attach a caca graphical context to a caca canvas
