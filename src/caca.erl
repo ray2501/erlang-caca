@@ -14,6 +14,7 @@
 -export([set_canvas_handle/3, get_canvas_handle_x/1, get_canvas_handle_y/1]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -export([refresh_display/1]).
+-export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
 -on_load(init/0).
 
 -define(APPNAME, caca).
@@ -174,6 +175,30 @@ free_display(_) ->
 -spec refresh_display(Display::reference()) -> ok | {error, any()}.
 
 refresh_display(_) ->
+    not_loaded(?LINE).
+
+%% @doc Load a font from memory for future use
+-spec load_font(Fontname::string()) -> {ok, reference()} | {error, any()}.
+
+load_font(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get a font's standard glyph width
+-spec get_font_width(Font::reference()) -> integer() | {error, any()}.
+
+get_font_width(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get a font's standard glyph height
+-spec get_font_height(Font::reference()) -> integer() | {error, any()}.
+
+get_font_height(_) ->
+    not_loaded(?LINE).
+
+%% @doc Free a font structure
+-spec free_font(Font::reference()) -> ok | {error, any()}.
+
+free_font(_) ->
     not_loaded(?LINE).
 
 %%====================================================================

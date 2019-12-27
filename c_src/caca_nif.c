@@ -11,6 +11,7 @@ static ErlNifResourceType* RES_TYPE;
 typedef struct {
     caca_canvas_t *canvas;
     caca_display_t *display;
+    caca_font_t *font;
 } CACA;
 
 ERL_NIF_TERM
@@ -248,6 +249,7 @@ create_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     if(res == NULL) return mk_error(env, "alloc_error");
     res->canvas = NULL;
     res->display = NULL;
+    res->font = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -795,6 +797,7 @@ create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     if(res == NULL) return mk_error(env, "alloc_error");
     res->canvas = NULL;
     res->display = NULL;
+    res->font = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -859,6 +862,7 @@ create_display_with_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     }
     res->canvas = NULL;
     res->display = NULL;
+    res->font = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -918,6 +922,141 @@ refresh_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     return mk_error(env, "error");
 }
 
+static ERL_NIF_TERM
+load_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    caca_font_t *font = NULL;
+    char *buffer = NULL;
+    unsigned int length = 0;
+    ERL_NIF_TERM ret;
+    CACA* res;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[0], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[0], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    font = caca_load_font((void const *) buffer, 0);
+    if(!font) {
+        if(buffer) free(buffer);
+        return mk_error(env, "function_error");
+    }
+
+    res = enif_alloc_resource(RES_TYPE, sizeof(CACA));
+    if(res == NULL) {
+        if(buffer) free(buffer);
+        return mk_error(env, "alloc_error");
+    }
+    res->canvas = NULL;
+    res->display = NULL;
+    res->font = NULL;
+
+    ret = enif_make_resource(env, res);
+    enif_release_resource(res);
+
+    res->font = font;
+
+    if(buffer) free(buffer);
+    return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
+}
+
+static ERL_NIF_TERM
+get_font_width(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->font) {
+        result = caca_get_font_width(res->font);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_font_height(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->font) {
+        result = caca_get_font_height(res->font);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+free_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->font) {
+        caca_free_font(res->font);
+        res->font = NULL;
+        assert(res->font == NULL);
+    }
+
+    return mk_atom(env, "ok");
+}
+
 static ErlNifFunc nif_funcs[] = {
     {"get_display_driver_list", 0, get_display_driver_list},
     {"get_export_list", 0, get_export_list},
@@ -944,6 +1083,10 @@ static ErlNifFunc nif_funcs[] = {
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
     {"refresh_display", 1, refresh_display},
+    {"load_font", 1, load_font},
+    {"get_font_width", 1, get_font_width},
+    {"get_font_height", 1, get_font_height},
+    {"free_font", 1, free_font},
 };
 
 ERL_NIF_INIT(caca, nif_funcs, &load, &reload, NULL, NULL)
