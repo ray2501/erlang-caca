@@ -673,6 +673,100 @@ clear_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+set_canvas_handle(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0;
+    int result = 0;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        result = caca_set_canvas_handle(res->canvas, x, y);
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_canvas_handle_x(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        x = caca_get_canvas_handle_x(res->canvas);
+        ret = enif_make_int(env, x);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_canvas_handle_y(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int y = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->canvas) {
+        y = caca_get_canvas_handle_y(res->canvas);
+        ret = enif_make_int(env, y);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -843,6 +937,9 @@ static ErlNifFunc nif_funcs[] = {
     {"set_color_ansi", 3, set_color_ansi},
     {"set_color_argb", 3, set_color_argb},
     {"clear_canvas", 1, clear_canvas},
+    {"set_canvas_handle", 3, set_canvas_handle},
+    {"get_canvas_handle_x", 1, get_canvas_handle_x},
+    {"get_canvas_handle_y", 1, get_canvas_handle_y},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},

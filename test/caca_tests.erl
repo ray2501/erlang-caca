@@ -73,3 +73,13 @@ clear_canvas_test() ->
     ?assertEqual(ok, caca:free_display(D)),
     ?assertEqual(ok, caca:free_canvas(R)).
 
+set_handle_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display_with_driver(R, "ncurses"),
+    ?assertEqual(ok, caca:set_canvas_handle(R, 10, 10)),
+    ?assertEqual(10, caca:get_canvas_handle_x(R)),
+    ?assertEqual(10, caca:get_canvas_handle_y(R)),
+    ?assertEqual(ok, caca:refresh_display(D)),
+    ?assertEqual(ok, caca:free_display(D)),
+    ?assertEqual(ok, caca:free_canvas(R)).
+

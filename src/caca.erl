@@ -11,6 +11,7 @@
 -export([set_canvas_size/3, get_canvas_width/1, get_canvas_height/1]).
 -export([gotoxy/3, wherex/1, wherey/1, put_char/4, get_char/3]).
 -export([set_color_ansi/3, set_color_argb/3, clear_canvas/1]).
+-export([set_canvas_handle/3, get_canvas_handle_x/1, get_canvas_handle_y/1]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -export([refresh_display/1]).
 -on_load(init/0).
@@ -134,6 +135,25 @@ clear_canvas(_) ->
 
 %% @doc Attach a caca graphical context to a caca canvas
 -spec create_display(Canvas::reference()) -> {ok, reference()} | {error, any()}.
+
+%% @doc Set cursor handle
+-spec set_canvas_handle(Canvas::reference(), X::integer(), Y::integer()) -> 
+    ok | {error, any()}.
+
+set_canvas_handle(_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get X handle position
+-spec get_canvas_handle_x(Canvas::reference()) -> integer() | {error, any()}.
+
+get_canvas_handle_x(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get Y handle position
+-spec get_canvas_handle_y(Canvas::reference()) -> integer() | {error, any()}.
+
+get_canvas_handle_y(_) ->
+    not_loaded(?LINE).
 
 create_display(_) ->
     not_loaded(?LINE).
