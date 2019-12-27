@@ -274,6 +274,10 @@ free_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
+    if(res->canvas == NULL) {
+        return enif_make_badarg(env);
+    }
+
     // If it is not NULL, then free it.
     if(res->canvas) {
         caca_free_canvas (res->canvas);
@@ -888,6 +892,10 @@ free_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
+    if(res->display == NULL) {
+        return enif_make_badarg(env);
+    }
+
     // If it is not NULL, then free it.
     if(res->display) {
         caca_free_display (res->display);
@@ -1044,6 +1052,10 @@ free_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
     {
+        return enif_make_badarg(env);
+    }
+
+    if(res->font == NULL) {
         return enif_make_badarg(env);
     }
 
