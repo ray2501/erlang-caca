@@ -1410,6 +1410,180 @@ fill_box(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+draw_triangle(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x1 = 0, y1 = 0, x2 = 0, y2 = 0, x3 = 0, y3 = 0;
+    uint32_t mychar = 0;
+
+    if(argc != 8)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &x2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &y2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[5], &x3))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[6], &y3))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[7], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_triangle(res->canvas, x1, y1, x2, y2, x3, y3, mychar);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+draw_thin_triangle(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x1 = 0, y1 = 0, x2 = 0, y2 = 0, x3 = 0, y3 = 0;
+
+    if(argc != 7)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &x2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &y2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[5], &x3))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[6], &y3))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_thin_triangle(res->canvas, x1, y1, x2, y2, x3, y3);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+fill_triangle(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x1 = 0, y1 = 0, x2 = 0, y2 = 0, x3 = 0, y3 = 0;
+    uint32_t mychar = 0;
+
+    if(argc != 8)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &x2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &y2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[5], &x3))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[6], &y3))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[7], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_fill_triangle(res->canvas, x1, y1, x2, y2, x3, y3, mychar);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -1738,6 +1912,9 @@ static ErlNifFunc nif_funcs[] = {
     {"draw_thin_box", 5, draw_thin_box},
     {"draw_cp437_box", 5, draw_cp437_box},
     {"fill_box", 6, fill_box},
+    {"draw_triangle", 8, draw_triangle},
+    {"draw_thin_triangle", 7, draw_thin_triangle},
+    {"fill_triangle", 8, fill_triangle},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},

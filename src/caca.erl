@@ -15,6 +15,7 @@
 -export([draw_line/6, draw_thin_line/5, draw_polyline/4, draw_thin_polyline/3]).
 -export([draw_circle/5, draw_ellipse/6, draw_thin_ellipse/5, fill_ellipse/6]).
 -export([draw_box/6, draw_thin_box/5, draw_cp437_box/5, fill_box/6]).
+-export([draw_triangle/8, draw_thin_triangle/7, fill_triangle/8]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -export([refresh_display/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
@@ -185,7 +186,7 @@ draw_circle(_,_,_,_,_) ->
 
 %% @doc Draw an ellipse on the canvas using the given character
 -spec draw_ellipse(Canvas::reference(), X::integer(), Y::integer(), 
-                  A::integer(), B::integer(),Char::char()) -> 
+                  A::integer(), B::integer(), Char::char()) -> 
     ok | {error, any()}.
 
 draw_ellipse(_,_,_,_,_,_) ->
@@ -201,7 +202,7 @@ draw_thin_ellipse(_,_,_,_,_) ->
 
 %% @doc Fill an ellipse on the canvas using the given character
 -spec fill_ellipse(Canvas::reference(), X::integer(), Y::integer(), 
-                  A::integer(), B::integer(),Char::char()) -> 
+                  A::integer(), B::integer(), Char::char()) -> 
     ok | {error, any()}.
 
 fill_ellipse(_,_,_,_,_,_) ->
@@ -209,7 +210,7 @@ fill_ellipse(_,_,_,_,_,_) ->
 
 %% @doc Draw a box on the canvas using the given character
 -spec draw_box(Canvas::reference(), X::integer(), Y::integer(), 
-                  W::integer(), H::integer(),Char::char()) -> 
+                  W::integer(), H::integer(), Char::char()) -> 
     ok | {error, any()}.
 
 draw_box(_,_,_,_,_,_) ->
@@ -233,10 +234,39 @@ draw_cp437_box(_,_,_,_,_) ->
 
 %% @doc Fill a box on the canvas using the given character
 -spec fill_box(Canvas::reference(), X::integer(), Y::integer(), 
-                  W::integer(), H::integer(),Char::char()) -> 
+                  W::integer(), H::integer(), Char::char()) -> 
     ok | {error, any()}.
 
 fill_box(_,_,_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Draw a triangle on the canvas using the given character
+-spec draw_triangle(Canvas::reference(), X1::integer(), Y1::integer(), 
+                  X2::integer(), Y2::integer(), 
+                  X3::integer(), Y3::integer(), 
+                  Char::char()) -> 
+    ok | {error, any()}.
+
+draw_triangle(_,_,_,_,_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Draw a thin triangle on the canvas
+-spec draw_thin_triangle(Canvas::reference(), X1::integer(), Y1::integer(), 
+                  X2::integer(), Y2::integer(), 
+                  X3::integer(), Y3::integer()) -> 
+    ok | {error, any()}.
+
+draw_thin_triangle(_,_,_,_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Fill a triangle on the canvas using the given character
+-spec fill_triangle(Canvas::reference(), X1::integer(), Y1::integer(), 
+                  X2::integer(), Y2::integer(), 
+                  X3::integer(), Y3::integer(), 
+                  Char::char()) -> 
+    ok | {error, any()}.
+
+fill_triangle(_,_,_,_,_,_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Set cursor handle
