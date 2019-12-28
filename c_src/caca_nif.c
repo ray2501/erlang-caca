@@ -1172,6 +1172,244 @@ draw_thin_ellipse(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+fill_ellipse(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, a = 0, b = 0;
+    uint32_t mychar = 0;
+
+    if(argc != 6)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &a))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &b))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[5], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_fill_ellipse(res->canvas, x, y, a, b, mychar);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+draw_box(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, w = 0, h = 0;
+    uint32_t mychar = 0;
+
+    if(argc != 6)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &w))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &h))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[5], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_box(res->canvas, x, y, w, h, mychar);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+draw_thin_box(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, w = 0, h = 0;
+
+    if(argc != 5)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &w))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &h))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_thin_box(res->canvas, x, y, w, h);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+draw_cp437_box(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, w = 0, h = 0;
+
+    if(argc != 5)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &w))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &h))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_cp437_box(res->canvas, x, y, w, h);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+fill_box(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, w = 0, h = 0;
+    uint32_t mychar = 0;
+
+    if(argc != 6)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &w))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &h))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[5], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_fill_box(res->canvas, x, y, w, h, mychar);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -1495,6 +1733,11 @@ static ErlNifFunc nif_funcs[] = {
     {"draw_circle", 5, draw_circle},
     {"draw_ellipse", 6, draw_ellipse},
     {"draw_thin_ellipse", 5, draw_thin_ellipse},
+    {"fill_ellipse", 6, fill_ellipse},
+    {"draw_box", 6, draw_box},
+    {"draw_thin_box", 5, draw_thin_box},
+    {"draw_cp437_box", 5, draw_cp437_box},
+    {"fill_box", 6, fill_box},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},

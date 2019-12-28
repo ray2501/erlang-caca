@@ -91,6 +91,46 @@ draw_thin_ellipse_test() ->
     caca:free_display(D),
     caca:free_canvas(R).
 
+fill_ellipse_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:fill_ellipse(R, 30, 15, 4, 5, 16#2B)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
+draw_box_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:draw_box(R, 30, 15, 4, 5, 16#2E)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
+draw_thin_box_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:draw_thin_box(R, 20, 15, 4, 5)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
+draw_cp437_box_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:draw_cp437_box(R, 20, 15, 4, 5)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
+fill_box_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:fill_box(R, 30, 15, 4, 5, 16#2E)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
 create_display_fail_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     ?_assertException(error, function_clause, caca:create_display(1)),
