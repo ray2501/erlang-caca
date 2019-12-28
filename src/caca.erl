@@ -9,7 +9,7 @@
 -export([get_font_list/0, rand/2]).
 -export([create_canvas/2, free_canvas/1]).
 -export([set_canvas_size/3, get_canvas_width/1, get_canvas_height/1]).
--export([gotoxy/3, wherex/1, wherey/1, put_char/4, get_char/3]).
+-export([gotoxy/3, wherex/1, wherey/1, put_char/4, get_char/3, put_str/4]).
 -export([set_color_ansi/3, set_color_argb/3, clear_canvas/1]).
 -export([set_canvas_handle/3, get_canvas_handle_x/1, get_canvas_handle_y/1]).
 -export([draw_line/6, draw_thin_line/5, draw_polyline/4, draw_thin_polyline/3]).
@@ -124,6 +124,12 @@ put_char(_,_,_,_) ->
 -spec get_char(Canvas::reference(), X::integer(), Y::integer()) -> char() | {error, any()}.
 
 get_char(_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Print a string
+-spec put_str(Canvas::reference(), X::integer(), Y::integer(), S::string()) -> ok | {error, any()}.
+
+put_str(_,_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Set the default colour pair for text (ANSI version)

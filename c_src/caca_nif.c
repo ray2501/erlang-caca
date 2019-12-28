@@ -573,6 +573,62 @@ get_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+put_str(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0;
+    char *buffer = NULL;
+    unsigned int length = 0;
+
+    if(argc != 4)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[3], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[3], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_put_str(res->canvas, x, y, buffer);
+        if(buffer) free(buffer);
+        return mk_atom(env, "ok");
+    }
+
+    if(buffer) free(buffer);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 set_color_ansi(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -1894,6 +1950,7 @@ static ErlNifFunc nif_funcs[] = {
     {"wherey", 1, wherey},
     {"put_char", 4, put_char},
     {"get_char", 3, get_char},
+    {"put_str", 4, put_str},
     {"set_color_ansi", 3, set_color_ansi},
     {"set_color_argb", 3, set_color_argb},
     {"clear_canvas", 1, clear_canvas},

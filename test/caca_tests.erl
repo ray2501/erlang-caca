@@ -35,6 +35,15 @@ put_char_test() ->
     ?assertEqual(16#41, caca:get_char(R, 10 , 10)),
     ?assertEqual(ok, caca:free_canvas(R)).
 
+put_str_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    caca:set_canvas_size(R, 80, 40),
+    ?assertEqual(ok, caca:put_str(R, 15, 10, "Hello Erlang!")),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
 draw_line_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display(R),
