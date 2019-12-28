@@ -1033,6 +1033,145 @@ draw_thin_polyline(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+draw_circle(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, r = 0;
+    uint32_t mychar = 0;
+
+    if(argc != 5)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &r))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[4], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_circle(res->canvas, x, y, r, mychar);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+draw_ellipse(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, a = 0, b = 0;
+    uint32_t mychar = 0;
+
+    if(argc != 6)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &a))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &b))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[5], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_ellipse(res->canvas, x, y, a, b, mychar);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+draw_thin_ellipse(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, a = 0, b = 0;
+
+    if(argc != 5)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &a))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &b))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_thin_ellipse(res->canvas, x, y, a, b);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -1353,6 +1492,9 @@ static ErlNifFunc nif_funcs[] = {
     {"draw_thin_line", 5, draw_thin_line},
     {"draw_polyline", 4, draw_polyline},
     {"draw_thin_polyline", 3, draw_thin_polyline},
+    {"draw_circle", 5, draw_circle},
+    {"draw_ellipse", 6, draw_ellipse},
+    {"draw_thin_ellipse", 5, draw_thin_ellipse},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},

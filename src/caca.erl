@@ -13,6 +13,7 @@
 -export([set_color_ansi/3, set_color_argb/3, clear_canvas/1]).
 -export([set_canvas_handle/3, get_canvas_handle_x/1, get_canvas_handle_y/1]).
 -export([draw_line/6, draw_thin_line/5, draw_polyline/4, draw_thin_polyline/3]).
+-export([draw_circle/5, draw_ellipse/6, draw_thin_ellipse/5]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -export([refresh_display/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
@@ -141,6 +142,14 @@ set_color_argb(_,_,_) ->
 clear_canvas(_) ->
     not_loaded(?LINE).
 
+%% @doc Draw a line on the canvas using the given character
+-spec draw_line(Canvas::reference(), X1::integer(), Y1::integer(), 
+		X2::integer(), Y2::integer(), Char::char()) -> 
+    ok | {error, any()}.
+
+draw_line(_,_,_,_,_,_) ->
+    not_loaded(?LINE).
+
 %% @doc Draw a thin line on the canvas, using ASCII art
 -spec draw_thin_line(Canvas::reference(), X1::integer(), Y1::integer(), 
 		X2::integer(), Y2::integer()) -> 
@@ -165,12 +174,28 @@ draw_polyline(_,_,_,_) ->
 draw_thin_polyline(_,_,_) ->
     not_loaded(?LINE).
 
-%% @doc Draw a line on the canvas using the given character
--spec draw_line(Canvas::reference(), X1::integer(), Y1::integer(), 
-		X2::integer(), Y2::integer(), Char::char()) -> 
+%% @doc Draw a circle on the canvas using the given character
+-spec draw_circle(Canvas::reference(), X::integer(), Y::integer(), 
+                  Radius::integer(), Char::char()) -> 
     ok | {error, any()}.
 
-draw_line(_,_,_,_,_,_) ->
+draw_circle(_,_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Draw an ellipse on the canvas using the given character
+-spec draw_ellipse(Canvas::reference(), X::integer(), Y::integer(), 
+                  A::integer(), B::integer(),Char::char()) -> 
+    ok | {error, any()}.
+
+draw_ellipse(_,_,_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Draw a thin ellipse on the canvas
+-spec draw_thin_ellipse(Canvas::reference(), X::integer(), Y::integer(), 
+                  A::integer(), B::integer()) -> 
+    ok | {error, any()}.
+
+draw_thin_ellipse(_,_,_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Set cursor handle
