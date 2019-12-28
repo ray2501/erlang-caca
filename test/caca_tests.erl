@@ -35,6 +35,14 @@ put_char_test() ->
     ?assertEqual(16#41, caca:get_char(R, 10 , 10)),
     ?assertEqual(ok, caca:free_canvas(R)).
 
+draw_line_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    caca:draw_line(R, 10, 10, 20, 20, 16#2B),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
 create_display_fail_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     ?_assertException(error, function_clause, caca:create_display(1)),

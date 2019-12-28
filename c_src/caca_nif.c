@@ -341,7 +341,6 @@ set_canvas_size(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         result = caca_set_canvas_size(res->canvas, width, height);
         if(result < 0) {
@@ -371,7 +370,6 @@ get_canvas_width(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         width = caca_get_canvas_width(res->canvas);
         ret = enif_make_int(env, width);
@@ -398,7 +396,6 @@ get_canvas_height(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         height = caca_get_canvas_height(res->canvas);
         ret = enif_make_int(env, height);
@@ -434,7 +431,6 @@ gotoxy(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         caca_gotoxy(res->canvas, x, y);
 
@@ -461,7 +457,6 @@ wherex(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         x = caca_wherex(res->canvas);
         ret = enif_make_int(env, x);
@@ -488,7 +483,6 @@ wherey(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         y = caca_wherey(res->canvas);
         ret = enif_make_int(env, y);
@@ -532,7 +526,6 @@ put_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         result = caca_put_char(res->canvas, x, y, mychar);
         ret = enif_make_int(env, result);
@@ -570,7 +563,6 @@ get_char(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         mychar = caca_get_char(res->canvas, x, y);
         ret = enif_make_uint(env, mychar);
@@ -615,7 +607,6 @@ set_color_ansi(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         result = caca_set_color_ansi(res->canvas, (uint8_t) fg, (uint8_t) bg);
         if (result < 0) {
@@ -663,7 +654,6 @@ set_color_argb(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         result = caca_set_color_argb(res->canvas, (uint16_t) fg, (uint16_t) bg);
         if (result < 0) {
@@ -691,7 +681,6 @@ clear_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         caca_clear_canvas(res->canvas);
         return mk_atom(env, "ok");
@@ -727,7 +716,6 @@ set_canvas_handle(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         result = caca_set_canvas_handle(res->canvas, x, y);
         if(result < 0) {
@@ -757,7 +745,6 @@ get_canvas_handle_x(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         x = caca_get_canvas_handle_x(res->canvas);
         ret = enif_make_int(env, x);
@@ -784,11 +771,60 @@ get_canvas_handle_y(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->canvas) {
         y = caca_get_canvas_handle_y(res->canvas);
         ret = enif_make_int(env, y);
         return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+draw_line(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+    uint32_t mychar = 0;
+
+    if(argc != 6)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &x2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &y2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[5], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_line(res->canvas, x1, y1, x2, y2, mychar);
+        return mk_atom(env, "ok");
     }
 
     return mk_error(env, "error");
@@ -943,7 +979,6 @@ refresh_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->display) {
         caca_refresh_display (res->display);
         return mk_atom(env, "ok");
@@ -1025,7 +1060,6 @@ get_font_width(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->font) {
         result = caca_get_font_width(res->font);
         ret = enif_make_int(env, result);
@@ -1052,7 +1086,6 @@ get_font_height(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
-    // If it is not NULL, then free it.
     if(res->font) {
         result = caca_get_font_height(res->font);
         ret = enif_make_int(env, result);
@@ -1114,6 +1147,7 @@ static ErlNifFunc nif_funcs[] = {
     {"set_canvas_handle", 3, set_canvas_handle},
     {"get_canvas_handle_x", 1, get_canvas_handle_x},
     {"get_canvas_handle_y", 1, get_canvas_handle_y},
+    {"draw_line", 6, draw_line},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
