@@ -875,6 +875,164 @@ draw_thin_line(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+draw_polyline(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int *xarray = NULL, *yarray = NULL;
+    uint32_t mychar;
+    int count = 0;
+    ERL_NIF_TERM list, hd, tl;
+    unsigned int lengthx = 0, lengthy = 0;
+
+    if(argc != 4)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_list_length(env, argv[1], &lengthx)) {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_list_length(env, argv[2], &lengthy)) {
+        return enif_make_badarg(env);
+    }
+
+    if(lengthx == 0 || lengthy == 0) {
+        return enif_make_badarg(env);
+    }
+
+    if (lengthx != lengthy) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[3], (unsigned int*) &mychar))
+    {
+        return enif_make_badarg(env);
+    }
+
+    list = argv[1];
+    count = 0;
+    xarray = (int*) malloc(sizeof(int) * lengthx);
+    if(!xarray) return mk_error(env, "malloc_error");
+    while (enif_get_list_cell(env, list, &hd, &tl)) {
+        if (!enif_get_int(env, hd, &xarray[count])) {
+             if(xarray) free(xarray);
+             return enif_make_badarg(env);
+        }
+
+        count++;
+        list = tl;
+    }
+
+    list = argv[2];
+    count = 0;
+    yarray = (int*) malloc(sizeof(int) * lengthy);
+    if(!yarray) return mk_error(env, "malloc_error");
+    while (enif_get_list_cell(env, list, &hd, &tl)) {
+        if (!enif_get_int(env, hd, &yarray[count])) {
+             if(yarray) free(yarray);
+             return enif_make_badarg(env);
+        }
+
+        count++;
+        list = tl;
+    }
+
+    if(res->canvas) {
+        caca_draw_polyline(res->canvas, xarray, yarray, lengthx - 1, mychar);
+
+        if(xarray) free(xarray);
+        if(yarray) free(yarray);
+        return mk_atom(env, "ok");
+    }
+
+    if(xarray) free(xarray);
+    if(yarray) free(yarray);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+draw_thin_polyline(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int *xarray = NULL, *yarray = NULL;
+    int count = 0;
+    ERL_NIF_TERM list, hd, tl;
+    unsigned int lengthx = 0, lengthy = 0;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_list_length(env, argv[1], &lengthx)) {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_list_length(env, argv[2], &lengthy)) {
+        return enif_make_badarg(env);
+    }
+
+    if(lengthx == 0 || lengthy == 0) {
+        return enif_make_badarg(env);
+    }
+
+    if (lengthx != lengthy) {
+        return enif_make_badarg(env);
+    }
+
+    list = argv[1];
+    count = 0;
+    xarray = (int*) malloc(sizeof(int) * lengthx);
+    if(!xarray) return mk_error(env, "malloc_error");
+    while (enif_get_list_cell(env, list, &hd, &tl)) {
+        if (!enif_get_int(env, hd, &xarray[count])) {
+             if(xarray) free(xarray);
+             return enif_make_badarg(env);
+        }
+
+        count++;
+        list = tl;
+    }
+
+    list = argv[2];
+    count = 0;
+    yarray = (int*) malloc(sizeof(int) * lengthy);
+    if(!yarray) return mk_error(env, "malloc_error");
+    while (enif_get_list_cell(env, list, &hd, &tl)) {
+        if (!enif_get_int(env, hd, &yarray[count])) {
+             if(yarray) free(yarray);
+             return enif_make_badarg(env);
+        }
+
+        count++;
+        list = tl;
+    }
+
+    if(res->canvas) {
+        caca_draw_thin_polyline(res->canvas, xarray, yarray, lengthx - 1);
+
+        if(xarray) free(xarray);
+        if(yarray) free(yarray);
+        return mk_atom(env, "ok");
+    }
+
+    if(xarray) free(xarray);
+    if(yarray) free(yarray);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -1193,6 +1351,8 @@ static ErlNifFunc nif_funcs[] = {
     {"get_canvas_handle_y", 1, get_canvas_handle_y},
     {"draw_line", 6, draw_line},
     {"draw_thin_line", 5, draw_thin_line},
+    {"draw_polyline", 4, draw_polyline},
+    {"draw_thin_polyline", 3, draw_thin_polyline},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},

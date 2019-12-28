@@ -12,7 +12,7 @@
 -export([gotoxy/3, wherex/1, wherey/1, put_char/4, get_char/3]).
 -export([set_color_ansi/3, set_color_argb/3, clear_canvas/1]).
 -export([set_canvas_handle/3, get_canvas_handle_x/1, get_canvas_handle_y/1]).
--export([draw_line/6, draw_thin_line/5]).
+-export([draw_line/6, draw_thin_line/5, draw_polyline/4, draw_thin_polyline/3]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -export([refresh_display/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
@@ -147,6 +147,22 @@ clear_canvas(_) ->
     ok | {error, any()}.
 
 draw_thin_line(_,_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Draw a polyline
+-spec draw_polyline(Canvas::reference(), 
+                    X_List::list(integer), Y_List::list(integer), Char::char()) ->
+    ok | {error, any()}.
+
+draw_polyline(_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Draw a thin line on the canvas, using ASCII art
+-spec draw_thin_polyline(Canvas::reference(), 
+                        X_List::list(integer), Y_List::list(integer)) -> 
+    ok | {error, any()}.
+
+draw_thin_polyline(_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Draw a line on the canvas using the given character

@@ -51,6 +51,22 @@ draw_thin_line_test() ->
     caca:free_display(D),
     caca:free_canvas(R).
 
+draw_polyline_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:draw_polyline(R, [10, 20, 10, 20], [10, 10, 20, 20], 16#2B)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
+draw_thin_polyline_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:draw_thin_polyline(R, [10, 20, 10, 20], [10, 10, 20, 20])),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
 create_display_fail_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     ?_assertException(error, function_clause, caca:create_display(1)),
