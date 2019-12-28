@@ -54,6 +54,28 @@ reload(ErlNifEnv* env, void** priv, ERL_NIF_TERM load_info)
 }
 
 static ERL_NIF_TERM
+caca_version(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    ERL_NIF_TERM verTerm;
+    const char *version = NULL;
+
+    if(argc != 0)
+    {
+        return enif_make_badarg(env);
+    }
+
+    version = caca_get_version();
+    if(!version) return mk_error(env, "return_error");
+
+    if (version) {
+         verTerm = enif_make_string(env, version, ERL_NIF_LATIN1);
+         return verTerm;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 get_display_driver_list(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     ERL_NIF_TERM erl_map;    
@@ -1070,6 +1092,7 @@ free_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ErlNifFunc nif_funcs[] = {
+    {"caca_version", 0, caca_version},
     {"get_display_driver_list", 0, get_display_driver_list},
     {"get_export_list", 0, get_export_list},
     {"get_import_list", 0, get_import_list},

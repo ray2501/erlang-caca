@@ -5,7 +5,7 @@
 -module(caca).
 
 %% API exports
--export([get_display_driver_list/0, get_export_list/0, get_import_list/0]).
+-export([caca_version/0, get_display_driver_list/0, get_export_list/0, get_import_list/0]).
 -export([get_font_list/0, rand/2]).
 -export([create_canvas/2, free_canvas/1]).
 -export([set_canvas_size/3, get_canvas_width/1, get_canvas_height/1]).
@@ -23,6 +23,12 @@
 %%====================================================================
 %% API functions
 %%====================================================================
+
+%% @doc Return the libcaca version
+-spec caca_version() -> string() | {error, any()}.
+
+caca_version() ->
+    not_loaded(?LINE).
 
 %% @doc Get available display drivers
 -spec get_display_driver_list() -> Map::#{} | {error, any()}.
