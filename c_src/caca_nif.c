@@ -831,6 +831,50 @@ draw_line(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+draw_thin_line(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+
+    if(argc != 5)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y1))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &x2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &y2))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_draw_thin_line(res->canvas, x1, y1, x2, y2);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -1148,6 +1192,7 @@ static ErlNifFunc nif_funcs[] = {
     {"get_canvas_handle_x", 1, get_canvas_handle_x},
     {"get_canvas_handle_y", 1, get_canvas_handle_y},
     {"draw_line", 6, draw_line},
+    {"draw_thin_line", 5, draw_thin_line},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},

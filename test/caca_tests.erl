@@ -38,7 +38,15 @@ put_char_test() ->
 draw_line_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display(R),
-    caca:draw_line(R, 10, 10, 20, 20, 16#2B),
+    ?assertEqual(ok, caca:draw_line(R, 10, 10, 20, 20, 16#2B)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
+draw_thin_line_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:draw_thin_line(R, 10, 10, 20, 20)),
     caca:refresh_display(D),
     caca:free_display(D),
     caca:free_canvas(R).
