@@ -2152,6 +2152,83 @@ free_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+get_display_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    const char *driver = NULL;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->display) {
+        driver = caca_get_display_driver (res->display);
+        ret = enif_make_string(env, driver, ERL_NIF_LATIN1);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_display_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char *buffer = NULL;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    if(res->display) {
+        result = caca_set_display_driver (res->display, buffer);
+        if (result < 0) {
+            if(buffer) free(buffer);
+            return mk_error(env, "function_error");
+        }
+
+        if(buffer) free(buffer);
+        return mk_atom(env, "ok");
+    }
+
+    if(buffer) free(buffer);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 refresh_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -2364,6 +2441,8 @@ static ErlNifFunc nif_funcs[] = {
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
+    {"get_display_driver", 1, get_display_driver},
+    {"set_display_driver", 2, set_display_driver},
     {"refresh_display", 1, refresh_display},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},

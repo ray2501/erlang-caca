@@ -20,6 +20,7 @@
 -export([get_frame_count/1, set_frame/2, get_frame_name/1, set_frame_name/2]).
 -export([create_frame/2, free_frame/2]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
+-export([get_display_driver/1, set_display_driver/2]).
 -export([refresh_display/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
 -on_load(init/0).
@@ -378,6 +379,18 @@ create_display_with_driver(_, _) ->
 -spec free_display(Display::reference()) -> ok | {error, any()}.
 
 free_display(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a caca graphical context's current output driver
+-spec get_display_driver(Display::reference()) -> string() | {error, any()}.
+
+get_display_driver(_) ->
+    not_loaded(?LINE).
+
+%% @doc Set the output driver
+-spec set_display_driver(Display::reference(), Driver::string()) -> string() | {error, any()}.
+
+set_display_driver(_,_) ->
     not_loaded(?LINE).
 
 %% @doc Flush pending changes and redraw the screen
