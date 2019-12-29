@@ -21,7 +21,7 @@
 -export([create_frame/2, free_frame/2]).
 -export([create_display/0, create_display/1, create_display_with_driver/2, free_display/1]).
 -export([get_display_driver/1, set_display_driver/2, get_canvas/1]).
--export([refresh_display/1]).
+-export([refresh_display/1, get_display_time/1, set_display_time/2]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
 -on_load(init/0).
 
@@ -409,6 +409,18 @@ get_canvas(_) ->
 -spec refresh_display(Display::reference()) -> ok | {error, any()}.
 
 refresh_display(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the display's average rendering time
+-spec get_display_time(Display::reference()) -> integer() | {error, any()}.
+
+get_display_time(_) ->
+    not_loaded(?LINE).
+
+%% @doc Set the refresh delay
+-spec set_display_time(Display::reference(), Uset::integer()) -> ok | {error, any()}.
+
+set_display_time(_,_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use
