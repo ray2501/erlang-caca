@@ -10,6 +10,7 @@
 -export([create_canvas/2, free_canvas/1]).
 -export([set_canvas_size/3, get_canvas_width/1, get_canvas_height/1]).
 -export([gotoxy/3, wherex/1, wherey/1, put_char/4, get_char/3, put_str/4]).
+-export([get_attr/3, set_attr/2, unset_attr/2, toggle_attr/2, put_attr/4]).
 -export([set_color_ansi/3, set_color_argb/3, clear_canvas/1]).
 -export([set_canvas_handle/3, get_canvas_handle_x/1, get_canvas_handle_y/1]).
 -export([draw_line/6, draw_thin_line/5, draw_polyline/4, draw_thin_polyline/3]).
@@ -130,6 +131,35 @@ get_char(_,_,_) ->
 -spec put_str(Canvas::reference(), X::integer(), Y::integer(), S::string()) -> ok | {error, any()}.
 
 put_str(_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the text attribute at the given coordinates
+-spec get_attr(Canvas::reference(), X::integer(), Y::integer()) -> integer() | {error, any()}.
+
+get_attr(_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Set the default character attribute
+-spec set_attr(Canvas::reference(), Attr::integer()) -> ok | {error, any()}.
+
+set_attr(_,_) ->
+    not_loaded(?LINE).
+%% @doc Unset flags in the default character attribute
+-spec unset_attr(Canvas::reference(), Attr::integer()) -> ok | {error, any()}.
+
+unset_attr(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Toggle flags in the default character attribute
+-spec toggle_attr(Canvas::reference(), Attr::integer()) -> ok | {error, any()}.
+
+toggle_attr(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Set the character attribute at the given coordinates
+-spec put_attr(Canvas::reference(), X::integer(), Y::integer(), Attr::integer()) -> ok | {error, any()}.
+
+put_attr(_,_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Set the default colour pair for text (ANSI version)

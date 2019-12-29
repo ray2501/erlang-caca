@@ -629,6 +629,168 @@ put_str(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+get_attr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0;
+    uint32_t result = 0;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_get_attr(res->canvas, x, y);
+        return enif_make_uint(env, (unsigned int) result);
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_attr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    uint32_t attr = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[1], (unsigned int *) &attr))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_set_attr(res->canvas, attr);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+unset_attr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    uint32_t attr = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[1], (unsigned int *) &attr))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_unset_attr(res->canvas, attr);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+toggle_attr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    uint32_t attr = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[1], (unsigned int *) &attr))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_toggle_attr(res->canvas, attr);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+put_attr(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0;
+    uint32_t attr = 0;
+
+    if(argc != 4)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[3], (unsigned int *) &attr))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        caca_put_attr(res->canvas, x, y, attr);
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 set_color_ansi(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -1951,6 +2113,11 @@ static ErlNifFunc nif_funcs[] = {
     {"put_char", 4, put_char},
     {"get_char", 3, get_char},
     {"put_str", 4, put_str},
+    {"get_attr", 3, get_attr},
+    {"set_attr", 2, set_attr},
+    {"unset_attr", 2, unset_attr},
+    {"toggle_attr", 2, toggle_attr},
+    {"put_attr", 4, put_attr},
     {"set_color_ansi", 3, set_color_ansi},
     {"set_color_argb", 3, set_color_argb},
     {"clear_canvas", 1, clear_canvas},

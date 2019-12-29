@@ -44,6 +44,16 @@ put_str_test() ->
     caca:free_display(D),
     caca:free_canvas(R).
 
+put_attr_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    caca:set_canvas_size(R, 80, 40),
+    ?assertEqual(ok, caca:put_attr(R, 15, 10, 16#55FF44)),
+    ?assertEqual(16#55FF44, caca:get_attr(R, 15, 10)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
 draw_line_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display(R),
