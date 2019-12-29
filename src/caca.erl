@@ -19,8 +19,8 @@
 -export([draw_triangle/8, draw_thin_triangle/7, fill_triangle/8]).
 -export([get_frame_count/1, set_frame/2, get_frame_name/1, set_frame_name/2]).
 -export([create_frame/2, free_frame/2]).
--export([create_display/1, create_display_with_driver/2, free_display/1]).
--export([get_display_driver/1, set_display_driver/2]).
+-export([create_display/0, create_display/1, create_display_with_driver/2, free_display/1]).
+-export([get_display_driver/1, set_display_driver/2, get_canvas/1]).
 -export([refresh_display/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
 -on_load(init/0).
@@ -364,6 +364,12 @@ free_frame(_,_) ->
     not_loaded(?LINE).
 
 %% @doc Attach a caca graphical context to a caca canvas
+-spec create_display() -> {ok, reference()} | {error, any()}.
+
+create_display() ->
+    not_loaded(?LINE).
+
+%% @doc Attach a caca graphical context to a caca canvas
 -spec create_display(Canvas::reference()) -> {ok, reference()} | {error, any()}.
 
 create_display(_) ->
@@ -391,6 +397,12 @@ get_display_driver(_) ->
 -spec set_display_driver(Display::reference(), Driver::string()) -> string() | {error, any()}.
 
 set_display_driver(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the canvas attached to a caca graphical context
+-spec get_canvas(Display::reference()) -> {ok, reference()} | {error, any()}.
+
+get_canvas(_) ->
     not_loaded(?LINE).
 
 %% @doc Flush pending changes and redraw the screen

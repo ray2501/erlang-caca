@@ -2018,6 +2018,35 @@ free_frame(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+create_display_0(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    caca_display_t *display = NULL;
+    ERL_NIF_TERM ret;
+    CACA* res;
+
+    if(argc != 0)
+    {
+        return enif_make_badarg(env);
+    }
+
+    display = caca_create_display(NULL);
+    if(!display) return mk_error(env, "error");
+
+    res = enif_alloc_resource(RES_TYPE, sizeof(CACA));
+    if(res == NULL) return mk_error(env, "alloc_error");
+    res->canvas = NULL;
+    res->display = NULL;
+    res->font = NULL;
+
+    ret = enif_make_resource(env, res);
+    enif_release_resource(res);
+
+    res->display = display;
+
+    return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -2225,6 +2254,44 @@ set_display_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     }
 
     if(buffer) free(buffer);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    caca_canvas_t *canvas;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->display) {
+        canvas = caca_get_canvas (res->display);
+        if(!canvas) return mk_error(env, "function_error");
+
+        res = enif_alloc_resource(RES_TYPE, sizeof(CACA));
+        if(res == NULL) return mk_error(env, "alloc_error");
+        res->canvas = NULL;
+        res->display = NULL;
+        res->font = NULL;
+
+        ret = enif_make_resource(env, res);
+        enif_release_resource(res);
+
+        res->canvas = canvas;
+
+        return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
+    }
+
     return mk_error(env, "error");
 }
 
@@ -2438,11 +2505,13 @@ static ErlNifFunc nif_funcs[] = {
     {"set_frame_name", 2, set_frame_name},
     {"create_frame", 2, create_frame},
     {"free_frame", 2, free_frame},
+    {"create_display", 0, create_display_0},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
     {"get_display_driver", 1, get_display_driver},
     {"set_display_driver", 2, set_display_driver},
+    {"get_canvas", 1, get_canvas},
     {"refresh_display", 1, refresh_display},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},

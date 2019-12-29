@@ -207,6 +207,11 @@ create_display_fail_test() ->
     ?_assertException(error, function_clause, caca:create_display(1)),
     ?assertEqual(ok, caca:free_canvas(R)).
 
+create_display_0_test() ->
+    {ok, D} = caca:create_display(),
+    {ok, R} =  caca:get_canvas(D),
+    ?assertEqual(ok, caca:free_display(D)).
+
 create_display_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display(R),
