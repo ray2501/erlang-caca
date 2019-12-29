@@ -174,6 +174,34 @@ fill_triangle_test() ->
     caca:free_display(D),
     caca:free_canvas(R).
 
+get_frame_count_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(1, caca:get_frame_count(R)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
+set_frame_name_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:set_frame_name(R, "current")),
+    ?assertEqual("current", caca:get_frame_name(R)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
+create_frame_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    ?assertEqual(ok, caca:create_frame(R, 0)),
+    ?assertEqual(ok, caca:set_frame(R, 1)),
+    ?assertEqual(2, caca:get_frame_count(R)),
+    ?assertEqual(ok, caca:free_frame(R, 1)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
 create_display_fail_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     ?_assertException(error, function_clause, caca:create_display(1)),

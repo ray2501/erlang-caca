@@ -17,6 +17,8 @@
 -export([draw_circle/5, draw_ellipse/6, draw_thin_ellipse/5, fill_ellipse/6]).
 -export([draw_box/6, draw_thin_box/5, draw_cp437_box/5, fill_box/6]).
 -export([draw_triangle/8, draw_thin_triangle/7, fill_triangle/8]).
+-export([get_frame_count/1, set_frame/2, get_frame_name/1, set_frame_name/2]).
+-export([create_frame/2, free_frame/2]).
 -export([create_display/1, create_display_with_driver/2, free_display/1]).
 -export([refresh_display/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
@@ -322,6 +324,42 @@ get_canvas_handle_x(_) ->
 -spec get_canvas_handle_y(Canvas::reference()) -> integer() | {error, any()}.
 
 get_canvas_handle_y(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the number of frames in a canvas
+-spec get_frame_count(Canvas::reference()) -> integer() | {error, any()}.
+
+get_frame_count(_) ->
+    not_loaded(?LINE).
+
+%% @doc Activate a given canvas frame
+-spec set_frame(Canvas::reference(), Id::integer()) -> ok | {error, any()}.
+
+set_frame(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the current frame's name
+-spec get_frame_name(Canvas::reference()) -> string() | {error, any()}.
+
+get_frame_name(_) ->
+    not_loaded(?LINE).
+
+%% @doc Set the current frame's name
+-spec set_frame_name(Canvas::reference(), Name::string()) -> ok | {error, any()}.
+
+set_frame_name(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Add a frame to a canvas
+-spec create_frame(Canvas::reference(), Id::integer()) -> ok | {error, any()}.
+
+create_frame(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Remove a frame from a canvas
+-spec free_frame(Canvas::reference(), Id::integer()) -> ok | {error, any()}.
+
+free_frame(_,_) ->
     not_loaded(?LINE).
 
 %% @doc Attach a caca graphical context to a caca canvas

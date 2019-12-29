@@ -1802,6 +1802,222 @@ fill_triangle(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+get_frame_count(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    ERL_NIF_TERM ret;
+    CACA* res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_get_frame_count(res->canvas);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_frame(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA* res;
+    int id = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &id))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_set_frame(res->canvas, id);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_frame_name(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    ERL_NIF_TERM ret;
+    CACA* res;
+    const char *result = NULL;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_get_frame_name(res->canvas);
+        ret = enif_make_string(env, result, ERL_NIF_LATIN1);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_frame_name(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA* res;
+    char * name = NULL;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    name = (char *) malloc(sizeof(char) * length + 1);
+    if(!name) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(name, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], name, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(name) free(name);
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_set_frame_name(res->canvas, name);
+        if (result < 0) {
+            if(name) free(name);
+            return mk_error(env, "function_error");
+        }
+
+        if(name) free(name);
+        return mk_atom(env, "ok");
+    }
+
+    if(name) free(name);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+create_frame(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA* res;
+    int id = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &id))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        /* The frame index indicates where the frame should be inserted. 
+	 * Valid values range from 0 to the current canvas frame count. 
+	 * If the frame index is greater than or equals the current canvas 
+	 * frame count, the new frame is appended at the end of the canvas. 
+	 * If the frame index is less than zero, the new frame is inserted 
+	 * at index 0.
+	 */
+        result = caca_create_frame(res->canvas, id);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+free_frame(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA* res;
+    int id = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &id))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        /* The frame index indicates the frame to delete. 
+	 * Valid values range from 0 to the current canvas 
+	 * frame count minus 1.
+	 */
+        result = caca_free_frame(res->canvas, id);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_display_t *display = NULL;
@@ -2139,6 +2355,12 @@ static ErlNifFunc nif_funcs[] = {
     {"draw_triangle", 8, draw_triangle},
     {"draw_thin_triangle", 7, draw_thin_triangle},
     {"fill_triangle", 8, fill_triangle},
+    {"get_frame_count", 1, get_frame_count},
+    {"set_frame", 2, set_frame},
+    {"get_frame_name", 1, get_frame_name},
+    {"set_frame_name", 2, set_frame_name},
+    {"create_frame", 2, create_frame},
+    {"free_frame", 2, free_frame},
     {"create_display", 1, create_display},
     {"create_display_with_driver", 2, create_display_with_driver},
     {"free_display", 1, free_display},
