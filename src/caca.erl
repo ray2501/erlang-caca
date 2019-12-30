@@ -23,6 +23,7 @@
 -export([get_display_driver/1, set_display_driver/2, get_canvas/1]).
 -export([refresh_display/1, get_display_time/1, set_display_time/2]).
 -export([get_display_width/1, get_display_height/1, set_display_title/2]).
+-export([set_mouse/2, set_cursor/2]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
 -on_load(init/0).
 
@@ -440,6 +441,18 @@ get_display_height(_) ->
 -spec set_display_title(Display::reference(), Title::string()) -> ok | {error, any()}.
 
 set_display_title(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Show or hide the mouse pointer
+-spec set_mouse(Display::reference(), Usec::integer()) -> ok | {error, any()}.
+
+set_mouse(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Show or hide the cursor
+-spec set_cursor(Display::reference(), Usec::integer()) -> ok | {error, any()}.
+
+set_cursor(_,_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use

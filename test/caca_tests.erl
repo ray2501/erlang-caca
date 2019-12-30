@@ -251,6 +251,22 @@ set_display_title_test() ->
     caca:refresh_display(D),
     caca:free_display(D).
 
+set_display_cursor_test() ->
+    {ok, D} = caca:create_display(),
+    ?assertEqual(ok, caca:set_cursor(D, 0)),
+    caca:refresh_display(D),
+    ?assertEqual(ok, caca:set_cursor(D, 1)),
+    caca:refresh_display(D),
+    caca:free_display(D).
+
+set_display_mouse_test() ->
+    {ok, D} = caca:create_display(),
+    ?assertEqual(ok, caca:set_mouse(D, 0)),
+    caca:refresh_display(D),
+    ?assertEqual(ok, caca:set_mouse(D, 1)),
+    caca:refresh_display(D),
+    caca:free_display(D).
+
 free_display_wrong_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display_with_driver(R, "ncurses"),

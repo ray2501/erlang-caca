@@ -2483,6 +2483,74 @@ set_display_title(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+set_mouse(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int flag = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &flag))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->display) {
+        result = caca_set_mouse (res->display, flag);
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_cursor(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int flag = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &flag))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->display) {
+        result = caca_set_cursor (res->display, flag);
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 load_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_font_t *font = NULL;
@@ -2682,6 +2750,8 @@ static ErlNifFunc nif_funcs[] = {
     {"get_display_width", 1, get_display_width},
     {"get_display_height", 1, get_display_height},
     {"set_display_title", 2, set_display_title},
+    {"set_mouse", 2, set_mouse},
+    {"set_cursor", 2, set_cursor},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},
