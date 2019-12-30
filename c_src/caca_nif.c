@@ -1962,12 +1962,12 @@ create_frame(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     if(res->canvas) {
         /* The frame index indicates where the frame should be inserted. 
-	 * Valid values range from 0 to the current canvas frame count. 
-	 * If the frame index is greater than or equals the current canvas 
-	 * frame count, the new frame is appended at the end of the canvas. 
-	 * If the frame index is less than zero, the new frame is inserted 
-	 * at index 0.
-	 */
+         * Valid values range from 0 to the current canvas frame count. 
+         * If the frame index is greater than or equals the current canvas 
+         * frame count, the new frame is appended at the end of the canvas. 
+         * If the frame index is less than zero, the new frame is inserted 
+         * at index 0.
+         */
         result = caca_create_frame(res->canvas, id);
         if (result < 0) {
             return mk_error(env, "function_error");
@@ -2003,9 +2003,9 @@ free_frame(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     if(res->canvas) {
         /* The frame index indicates the frame to delete. 
-	 * Valid values range from 0 to the current canvas 
-	 * frame count minus 1.
-	 */
+         * Valid values range from 0 to the current canvas 
+         * frame count minus 1.
+         */
         result = caca_free_frame(res->canvas, id);
         if (result < 0) {
             return mk_error(env, "function_error");
@@ -2380,6 +2380,109 @@ set_display_time(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+get_display_width(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->display) {
+        result = caca_get_display_width (res->display);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_display_height(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->display) {
+        result = caca_get_display_height (res->display);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_display_title(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char *buffer = NULL;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    if(res->display) {
+        result = caca_set_display_title (res->display, buffer);
+        if(result < 0) {
+            if(buffer) free(buffer);
+            return mk_error(env, "function_error");
+        }
+
+        if(buffer) free(buffer);
+        return mk_atom(env, "ok");
+    }
+
+    if(buffer) free(buffer);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 load_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_font_t *font = NULL;
@@ -2576,6 +2679,9 @@ static ErlNifFunc nif_funcs[] = {
     {"refresh_display", 1, refresh_display},
     {"get_display_time", 1, get_display_time},
     {"set_display_time", 2, set_display_time},
+    {"get_display_width", 1, get_display_width},
+    {"get_display_height", 1, get_display_height},
+    {"set_display_title", 2, set_display_title},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},

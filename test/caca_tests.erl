@@ -245,6 +245,12 @@ set_display_time_test() ->
     caca:free_display(D),
     caca:free_canvas(R).
 
+set_display_title_test() ->
+    {ok, D} = caca:create_display(),
+    ?assertEqual(ok, caca:set_display_title(D, "Hello Erlang")),
+    caca:refresh_display(D),
+    caca:free_display(D).
+
 free_display_wrong_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display_with_driver(R, "ncurses"),
