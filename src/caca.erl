@@ -13,6 +13,7 @@
 -export([get_attr/3, set_attr/2, unset_attr/2, toggle_attr/2, put_attr/4]).
 -export([set_color_ansi/3, set_color_argb/3, clear_canvas/1]).
 -export([set_canvas_handle/3, get_canvas_handle_x/1, get_canvas_handle_y/1]).
+-export([blit/4, blit/5]).
 -export([draw_line/6, draw_thin_line/5, draw_polyline/4, draw_thin_polyline/3]).
 -export([draw_circle/5, draw_ellipse/6, draw_thin_ellipse/5, fill_ellipse/6]).
 -export([draw_box/6, draw_thin_box/5, draw_cp437_box/5, fill_box/6]).
@@ -183,6 +184,22 @@ set_color_argb(_,_,_) ->
 -spec clear_canvas(Canvas::reference()) -> ok | {error, any()}.
 
 clear_canvas(_) ->
+    not_loaded(?LINE).
+
+%% @doc Blit a canvas onto another one
+-spec blit(Canvas::reference(), X1::integer(), Y1::integer(), 
+           CanvasSrc::reference()) -> 
+    ok | {error, any()}.
+
+blit(_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Blit a canvas onto another one
+-spec blit(Canvas::reference(), X1::integer(), Y1::integer(), 
+           CanvasSrc::reference(), CanvasMask::reference()) -> 
+    ok | {error, any()}.
+
+blit(_,_,_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Draw a line on the canvas using the given character

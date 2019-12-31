@@ -54,6 +54,39 @@ put_attr_test() ->
     caca:free_display(D),
     caca:free_canvas(R).
 
+blit_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    {ok, D} = caca:create_display(R),
+    caca:set_color_ansi(R, 16#1, 16#E),
+    caca:put_str(R, 1, 1, "Hello Erlang"),
+    caca:draw_line(R, 10, 10, 20, 20, 16#2B),
+    {ok, Src} = caca:create_canvas(60, 30),
+    caca:draw_polyline(Src, [10, 20, 10, 20], [10, 10, 20, 20], 16#2B),
+    ?assertEqual(ok, caca:blit(R, 20, 10, Src)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R),
+    caca:free_canvas(Src).
+
+blit_2_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    {ok, D} = caca:create_display(R),
+    caca:draw_line(R, 10, 10, 20, 20, 16#2B),
+    {ok, Src} = caca:create_canvas(60, 30),
+    caca:set_color_ansi(Src, 16#B, 16#3),
+    caca:draw_polyline(Src, [1, 40, 20, 40], [40, 1, 20, 40], 16#2B),
+    {ok, Mask} = caca:create_canvas(60, 30),
+    caca:set_color_ansi(Mask, 16#1, 16#E),
+    caca:clear_canvas(Mask),
+    caca:set_color_ansi(Mask, 16#F, 16#F),
+    caca:draw_thin_box(Mask, 20, 20, 25, 25),
+    ?assertEqual(ok, caca:blit(R, 20, 10, Src, Mask)),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R),
+    caca:free_canvas(Src),
+    caca:free_canvas(Mask).
+
 draw_line_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display(R),
