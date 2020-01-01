@@ -14,6 +14,8 @@
 -export([set_color_ansi/3, set_color_argb/3, clear_canvas/1]).
 -export([set_canvas_handle/3, get_canvas_handle_x/1, get_canvas_handle_y/1]).
 -export([blit/4, blit/5, set_canvas_boundaries/5]).
+-export([invert/1, flip/1, flop/1, rotate_180/1]).
+-export([rotate_left/1, rotate_right/1, stretch_left/1, stretch_right/1]).
 -export([draw_line/6, draw_thin_line/5, draw_polyline/4, draw_thin_polyline/3]).
 -export([draw_circle/5, draw_ellipse/6, draw_thin_ellipse/5, fill_ellipse/6]).
 -export([draw_box/6, draw_thin_box/5, draw_cp437_box/5, fill_box/6]).
@@ -208,6 +210,62 @@ blit(_,_,_,_,_) ->
     ok | {error, any()}.
 
 set_canvas_boundaries(_,_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Invert a canvas' colours
+-spec invert(Canvas::reference()) -> 
+    ok | {error, any()}.
+
+invert(_) ->
+    not_loaded(?LINE).
+
+%% @doc Flip a canvas horizontally
+-spec flip(Canvas::reference()) -> 
+    ok | {error, any()}.
+
+flip(_) ->
+    not_loaded(?LINE).
+
+%% @doc Flip a canvas vertically
+-spec flop(Canvas::reference()) -> 
+    ok | {error, any()}.
+
+flop(_) ->
+    not_loaded(?LINE).
+
+%% @doc Rotate a canvas
+-spec rotate_180(Canvas::reference()) -> 
+    ok | {error, any()}.
+
+rotate_180(_) ->
+    not_loaded(?LINE).
+
+%% @doc Rotate a canvas, 90 degrees counterclockwise
+-spec rotate_left(Canvas::reference()) -> 
+    ok | {error, any()}.
+
+rotate_left(_) ->
+    not_loaded(?LINE).
+
+%% @doc Rotate a canvas, 90 degrees counterclockwise
+-spec rotate_right(Canvas::reference()) -> 
+    ok | {error, any()}.
+
+rotate_right(_) ->
+    not_loaded(?LINE).
+
+%% @doc Rotate and stretch a canvas, 90 degrees counterclockwise
+-spec stretch_left(Canvas::reference()) -> 
+    ok | {error, any()}.
+
+stretch_left(_) ->
+    not_loaded(?LINE).
+
+%% @doc Rotate and stretch a canvas, 90 degrees clockwise
+-spec stretch_right(Canvas::reference()) -> 
+    ok | {error, any()}.
+
+stretch_right(_) ->
     not_loaded(?LINE).
 
 %% @doc Draw a line on the canvas using the given character

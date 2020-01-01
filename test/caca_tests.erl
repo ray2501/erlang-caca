@@ -94,6 +94,46 @@ set_canvas_boundaries_test() ->
     ?assertEqual(ok, caca:set_canvas_boundaries(R, 10, 5, 60, 30)),
     caca:free_canvas(R).
 
+invert_canvas_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    ?assertEqual(ok, caca:invert(R)),
+    caca:free_canvas(R).
+
+flip_canvas_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    ?assertEqual(ok, caca:flip(R)),
+    caca:free_canvas(R).
+
+flop_canvas_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    ?assertEqual(ok, caca:flop(R)),
+    caca:free_canvas(R).
+
+rotate_180_canvas_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    ?assertEqual(ok, caca:rotate_180(R)),
+    caca:free_canvas(R).
+
+rotate_left_canvas_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    ?assertEqual(ok, caca:rotate_left(R)),
+    caca:free_canvas(R).
+
+rotate_right_canvas_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    ?assertEqual(ok, caca:rotate_right(R)),
+    caca:free_canvas(R).
+
+stretch_left_canvas_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    ?assertEqual(ok, caca:stretch_left(R)),
+    caca:free_canvas(R).
+
+stretch_right_canvas_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    ?assertEqual(ok, caca:stretch_right(R)),
+    caca:free_canvas(R).
+
 draw_line_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display(R),

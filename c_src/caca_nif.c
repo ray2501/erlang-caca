@@ -1141,6 +1141,230 @@ set_canvas_boundaries(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+invert(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_invert(res->canvas);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+flip(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_flip(res->canvas);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+flop(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_flop(res->canvas);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+rotate_180(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_rotate_180(res->canvas);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+rotate_left(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_rotate_left(res->canvas);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+rotate_right(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_rotate_right(res->canvas);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+stretch_left(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_stretch_left(res->canvas);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+stretch_right(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int result = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_stretch_right(res->canvas);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 draw_line(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -2861,6 +3085,14 @@ static ErlNifFunc nif_funcs[] = {
     {"blit", 4, blit_4},
     {"blit", 5, blit_5},
     {"set_canvas_boundaries", 5, set_canvas_boundaries},
+    {"invert", 1, invert},
+    {"flip", 1, flip},
+    {"flop", 1, flop},
+    {"rotate_180", 1, rotate_180},
+    {"rotate_left", 1, rotate_left},
+    {"rotate_right", 1, rotate_right},
+    {"stretch_left", 1, stretch_left},
+    {"stretch_right", 1, stretch_right},
     {"draw_line", 6, draw_line},
     {"draw_thin_line", 5, draw_thin_line},
     {"draw_polyline", 4, draw_polyline},
