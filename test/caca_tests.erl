@@ -87,6 +87,13 @@ blit_2_test() ->
     caca:free_canvas(Src),
     caca:free_canvas(Mask).
 
+set_canvas_boundaries_test() ->
+    {ok, R} = caca:create_canvas(80, 40),
+    caca:set_color_ansi(R, 16#1, 16#E),
+    caca:put_str(R, 20, 10, "Hello Erlang"),
+    ?assertEqual(ok, caca:set_canvas_boundaries(R, 10, 5, 60, 30)),
+    caca:free_canvas(R).
+
 draw_line_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     {ok, D} = caca:create_display(R),

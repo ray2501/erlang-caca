@@ -1093,6 +1093,54 @@ blit_5(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+set_canvas_boundaries(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    int x = 0, y = 0, w = 0, h = 0;
+    int result = 0;
+
+    if(argc != 5)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &w))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &h))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_set_canvas_boundaries(res->canvas, x, y, w, h);
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        }
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 draw_line(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -2812,6 +2860,7 @@ static ErlNifFunc nif_funcs[] = {
     {"get_canvas_handle_y", 1, get_canvas_handle_y},
     {"blit", 4, blit_4},
     {"blit", 5, blit_5},
+    {"set_canvas_boundaries", 5, set_canvas_boundaries},
     {"draw_line", 6, draw_line},
     {"draw_thin_line", 5, draw_thin_line},
     {"draw_polyline", 4, draw_polyline},
