@@ -605,6 +605,10 @@ put_str(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
+    if (length < 1) {
+        return enif_make_badarg(env);
+    }
+
     buffer = (char *) malloc(sizeof(char) * length + 1);
     if(!buffer) {
         return mk_error(env, "no_memory");
@@ -2276,6 +2280,10 @@ set_frame_name(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
     name = (char *) malloc(sizeof(char) * length + 1);
     if(!name) {
         return mk_error(env, "no_memory");
@@ -2477,6 +2485,10 @@ create_display_with_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     // String in Erlang is a list, so try to get list length
     if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
         return enif_make_badarg(env);
     }
 
@@ -2820,6 +2832,10 @@ set_display_title(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return enif_make_badarg(env);
     }
 
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
     buffer = (char *) malloc(sizeof(char) * length + 1);
     if(!buffer) {
         return mk_error(env, "no_memory");
@@ -2932,6 +2948,10 @@ load_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     // String in Erlang is a list, so try to get list length
     if(!enif_get_list_length(env, argv[0], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
         return enif_make_badarg(env);
     }
 
