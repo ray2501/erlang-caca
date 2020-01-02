@@ -22,6 +22,7 @@
 -export([draw_triangle/8, draw_thin_triangle/7, fill_triangle/8]).
 -export([get_frame_count/1, set_frame/2, get_frame_name/1, set_frame_name/2]).
 -export([create_frame/2, free_frame/2]).
+-export([export_canvas_to_memory/2, export_area_to_memory/6]).
 -export([create_display/0, create_display/1, create_display_with_driver/2, free_display/1]).
 -export([get_display_driver/1, set_display_driver/2, get_canvas/1]).
 -export([refresh_display/1, get_display_time/1, set_display_time/2]).
@@ -446,6 +447,20 @@ create_frame(_,_) ->
 -spec free_frame(Canvas::reference(), Id::integer()) -> ok | {error, any()}.
 
 free_frame(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Export a canvas into a foreign format
+-spec export_canvas_to_memory(Canvas::reference(), Format::string()) -> binary() | {error, any()}.
+
+export_canvas_to_memory(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Export a canvas portion into a foreign format
+-spec export_area_to_memory(Canvas::reference(), X::integer(), Y::integer(), 
+                  W::integer(), H::integer(), Format::string()) -> 
+    binary() | {error, any()}.
+
+export_area_to_memory(_,_,_,_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Attach a caca graphical context to a caca canvas
