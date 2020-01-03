@@ -29,7 +29,7 @@
 -export([refresh_display/1, get_display_time/1, set_display_time/2]).
 -export([get_display_width/1, get_display_height/1, set_display_title/2]).
 -export([set_mouse/2, set_cursor/2]).
--export([load_font/1, get_font_width/1, get_font_height/1, free_font/1]).
+-export([load_font/1, get_font_width/1, get_font_height/1, free_font/1, render_canvas/6]).
 -on_load(init/0).
 
 -define(APPNAME, caca).
@@ -606,6 +606,14 @@ get_font_height(_) ->
 -spec free_font(Font::reference()) -> ok | {error, any()}.
 
 free_font(_) ->
+    not_loaded(?LINE).
+
+%% @doc Render the canvas onto an image buffer
+-spec render_canvas(Canvas::reference(), Font::reference(), Buf::binary(), 
+                    Width::integer(), Height::integer(), Pitch::integer()) -> 
+    ok | {error, any()}.
+
+render_canvas(_,_,_,_,_,_) ->
     not_loaded(?LINE).
 
 %%====================================================================

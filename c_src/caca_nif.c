@@ -3542,6 +3542,70 @@ free_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     return mk_atom(env, "ok");
 }
 
+static ERL_NIF_TERM
+render_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *can;
+    CACA *font;
+    ErlNifBinary buf = {0};
+    int width = 0, height = 0, pitch = 0;
+    int result = 0;
+
+    if(argc != 6)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &can))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(can->canvas == NULL) {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[1], RES_TYPE, (void **) &font))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(font->font == NULL) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_inspect_binary(env, argv[2], &buf))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &width))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &height))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[5], &pitch))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(can->canvas && font->font) {
+        result = caca_render_canvas(can->canvas, font->font, buf.data, width, height, pitch);
+        if(result < 0) {
+             return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
 static ErlNifFunc nif_funcs[] = {
     {"caca_version", 0, caca_version},
     {"get_display_driver_list", 0, get_display_driver_list},
@@ -3628,6 +3692,7 @@ static ErlNifFunc nif_funcs[] = {
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},
     {"free_font", 1, free_font},
+    {"render_canvas", 6, render_canvas},
 };
 
 ERL_NIF_INIT(caca, nif_funcs, &load, &reload, NULL, NULL)
