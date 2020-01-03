@@ -2299,12 +2299,12 @@ set_frame_name(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     if(res->canvas) {
         result = caca_set_frame_name(res->canvas, name);
+        if(name) free(name);
+
         if (result < 0) {
-            if(name) free(name);
             return mk_error(env, "function_error");
         }
 
-        if(name) free(name);
         return mk_atom(env, "ok");
     }
 
@@ -2392,6 +2392,318 @@ free_frame(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+import_canvas_from_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA* res;
+    char *fmt = NULL;
+    unsigned int length = 0;
+    ErlNifBinary buf = {0};
+    int result = 0;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_inspect_binary(env, argv[1], &buf))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[2], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    fmt = (char *) malloc(sizeof(char) * length + 1);
+    if(!fmt) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(fmt, '\0', length + 1);
+
+    if (enif_get_string(env, argv[2], fmt, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(fmt) free(fmt);
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_import_canvas_from_memory(res->canvas, buf.data, buf.size, fmt);
+        if(fmt) free(fmt);
+
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        } else if(result == 0) {
+            return mk_error(env, "no_memory_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    if(fmt) free(fmt);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+import_canvas_from_file(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA* res;
+    char *filename = NULL;
+    char *fmt = NULL;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 3)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    filename = (char *) malloc(sizeof(char) * length + 1);
+    if(!filename) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(filename, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], filename, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(filename) free(filename);
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[2], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    fmt = (char *) malloc(sizeof(char) * length + 1);
+    if(!fmt) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(fmt, '\0', length + 1);
+
+    if (enif_get_string(env, argv[2], fmt, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(fmt) free(fmt);
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_import_canvas_from_file(res->canvas, filename, fmt);
+        if(filename) free(filename);
+        if(fmt) free(fmt);
+
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        } else if(result == 0) {
+            return mk_error(env, "no_memory_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    if(filename) free(filename);
+    if(fmt) free(fmt);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+import_area_from_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA* res;
+    char *fmt = NULL;
+    unsigned int length = 0;
+    int x = 0, y = 0;
+    ErlNifBinary buf = {0};
+    int result = 0;
+
+    if(argc != 5)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_inspect_binary(env, argv[3], &buf))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[4], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    fmt = (char *) malloc(sizeof(char) * length + 1);
+    if(!fmt) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(fmt, '\0', length + 1);
+
+    if (enif_get_string(env, argv[4], fmt, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(fmt) free(fmt);
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_import_area_from_memory(res->canvas, x, y, buf.data, buf.size, fmt);
+        if(fmt) free(fmt);
+
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        } else if(result == 0) {
+            return mk_error(env, "no_memory_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    if(fmt) free(fmt);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+import_area_from_file(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA* res;
+    char *filename = NULL;
+    char *fmt = NULL;
+    int x = 0, y = 0;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 5)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &x))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[3], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    filename = (char *) malloc(sizeof(char) * length + 1);
+    if(!filename) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(filename, '\0', length + 1);
+
+    if (enif_get_string(env, argv[3], filename, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(filename) free(filename);
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[4], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    fmt = (char *) malloc(sizeof(char) * length + 1);
+    if(!fmt) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(fmt, '\0', length + 1);
+
+    if (enif_get_string(env, argv[4], fmt, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(fmt) free(fmt);
+        return enif_make_badarg(env);
+    }
+
+    if(res->canvas) {
+        result = caca_import_area_from_file(res->canvas, x, y, filename, fmt);
+        if(filename) free(filename);
+        if(fmt) free(fmt);
+
+        if (result < 0) {
+            return mk_error(env, "function_error");
+        } else if(result == 0) {
+            return mk_error(env, "no_memory_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    if(filename) free(filename);
+    if(fmt) free(fmt);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 export_canvas_to_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA* res;
@@ -2436,8 +2748,9 @@ export_canvas_to_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     if(res->canvas) {
         buffer = caca_export_canvas_to_memory(res->canvas, fmt, (size_t *) &buffer_length);
+        if(fmt) free(fmt);
+
         if (buffer==NULL) {
-            if(fmt) free(fmt);
             return mk_error(env, "function_error");
         }
 
@@ -2445,14 +2758,12 @@ export_canvas_to_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
          * Prepare to return a binary term
          */
         if(!enif_alloc_binary(buffer_length, &result_bin)) {
-            if(fmt) free(fmt);
             return mk_error(env, "malloc_error");
         }
 
         memcpy(result_bin.data, buffer, buffer_length);
         result = enif_make_binary(env, &result_bin);
 
-        if(fmt) free(fmt);
         return result;
     }
 
@@ -2526,8 +2837,9 @@ export_area_to_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     if(res->canvas) {
         buffer = caca_export_canvas_to_memory(res->canvas, fmt, (size_t *) &buffer_length);
+        if(fmt) free(fmt);
+
         if (buffer==NULL) {
-            if(fmt) free(fmt);
             return mk_error(env, "function_error");
         }
 
@@ -2535,14 +2847,12 @@ export_area_to_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
          * Prepare to return a binary term
          */
         if(!enif_alloc_binary(buffer_length, &result_bin)) {
-            if(fmt) free(fmt);
             return mk_error(env, "malloc_error");
         }
 
         memcpy(result_bin.data, buffer, buffer_length);
         result = enif_make_binary(env, &result_bin);
 
-        if(fmt) free(fmt);
         return result;
     }
 
@@ -2781,12 +3091,12 @@ set_display_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     if(res->display) {
         result = caca_set_display_driver (res->display, buffer);
+        if(buffer) free(buffer);
+
         if (result < 0) {
-            if(buffer) free(buffer);
             return mk_error(env, "function_error");
         }
 
-        if(buffer) free(buffer);
         return mk_atom(env, "ok");
     }
 
@@ -3010,12 +3320,12 @@ set_display_title(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
     if(res->display) {
         result = caca_set_display_title (res->display, buffer);
+        if(buffer) free(buffer);
+
         if(result < 0) {
-            if(buffer) free(buffer);
             return mk_error(env, "function_error");
         }
 
-        if(buffer) free(buffer);
         return mk_atom(env, "ok");
     }
 
@@ -3293,6 +3603,10 @@ static ErlNifFunc nif_funcs[] = {
     {"set_frame_name", 2, set_frame_name},
     {"create_frame", 2, create_frame},
     {"free_frame", 2, free_frame},
+    {"import_canvas_from_memory", 3, import_canvas_from_memory},
+    {"import_canvas_from_file", 3, import_canvas_from_file},
+    {"import_area_from_memory", 5, import_area_from_memory},
+    {"import_area_from_file", 5, import_area_from_file},
     {"export_canvas_to_memory", 2, export_canvas_to_memory},
     {"export_area_to_memory", 6, export_area_to_memory},
     {"create_display", 0, create_display_0},
