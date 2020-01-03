@@ -7,6 +7,18 @@ create_canvas_fail_1_test() ->
 create_canvas_fail_2_test() ->
     ?_assertException(error, function_clause, caca:create_canvas(0, -1)).
 
+get_font_list_test() ->
+     ?assertNotEqual([], caca:get_font_list()).
+
+get_display_driver_list_test() ->
+     ?assertNotEqual(#{}, caca:get_display_driver_list()).
+
+get_export_list_test() ->
+     ?assertNotEqual(#{}, caca:get_export_list()).
+
+get_import_list_test() ->
+     ?assertNotEqual(#{}, caca:get_import_list()).
+
 create_canvas_test() ->
     {ok, R} = caca:create_canvas(0, 0),
     ?assertEqual(0, caca:get_canvas_width(R)),
