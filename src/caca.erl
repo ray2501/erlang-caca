@@ -35,6 +35,10 @@
 -export([get_event_resize_width/1, get_event_resize_height/1]).
 -export([create_dither/8, free_dither/1, set_dither_brightness/2, get_dither_brightness/1]).
 -export([set_dither_gamma/2, get_dither_gamma/1, set_dither_contrast/2, get_dither_contrast/1]).
+-export([set_dither_antialias/2, get_dither_antialias/1, get_dither_antialias_list/1]).
+-export([set_dither_color/2, get_dither_color/1, get_dither_color_list/1]).
+-export([set_dither_charset/2, get_dither_charset/1, get_dither_charset_list/1]).
+-export([set_dither_algorithm/2, get_dither_algorithm/1, get_dither_algorithm_list/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1, render_canvas/6]).
 -on_load(init/0).
 
@@ -712,6 +716,78 @@ set_dither_contrast(_,_) ->
 -spec get_dither_contrast(Dither::reference()) ->  float() | {error, any()}.
 
 get_dither_contrast(_) ->
+    not_loaded(?LINE).
+
+%% @doc Set dither antialiasing
+-spec set_dither_antialias(Dither::reference(), Value::string()) ->  ok | {error, any()}.
+
+set_dither_antialias(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get current antialiasing method
+-spec get_dither_antialias(Dither::reference()) ->  string() | {error, any()}.
+
+get_dither_antialias(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get available antialiasing methods
+-spec get_dither_antialias_list(Dither::reference()) ->  list(string) | {error, any()}.
+
+get_dither_antialias_list(_) ->
+    not_loaded(?LINE).
+
+%% @doc Choose colours used for dithering
+-spec set_dither_color(Dither::reference(), Value::string()) ->  ok | {error, any()}.
+
+set_dither_color(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get current colour mode
+-spec get_dither_color(Dither::reference()) ->  string() | {error, any()}.
+
+get_dither_color(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get available colour modes
+-spec get_dither_color_list(Dither::reference()) ->  list(string) | {error, any()}.
+
+get_dither_color_list(_) ->
+    not_loaded(?LINE).
+
+%% @doc Choose characters used for dithering
+-spec set_dither_charset(Dither::reference(), Value::string()) ->  ok | {error, any()}.
+
+set_dither_charset(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get available dither character sets
+-spec get_dither_charset(Dither::reference()) ->  string() | {error, any()}.
+
+get_dither_charset(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get current character set
+-spec get_dither_charset_list(Dither::reference()) ->  list(string) | {error, any()}.
+
+get_dither_charset_list(_) ->
+    not_loaded(?LINE).
+
+%% @doc Set dithering algorithm
+-spec set_dither_algorithm(Dither::reference(), Value::string()) ->  ok | {error, any()}.
+
+set_dither_algorithm(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get current dithering algorithm
+-spec get_dither_algorithm(Dither::reference()) ->  string() | {error, any()}.
+
+get_dither_algorithm(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get dithering algorithms
+-spec get_dither_algorithm_list(Dither::reference()) ->  list(string) | {error, any()}.
+
+get_dither_algorithm_list(_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use

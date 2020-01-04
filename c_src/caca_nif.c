@@ -3989,6 +3989,510 @@ get_dither_gamma(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+set_dither_antialias(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char *buffer = NULL;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_set_dither_antialias(res->dither, buffer);
+        if(buffer) free(buffer);
+
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    if(buffer) free(buffer);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_antialias(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char const *result = NULL;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_get_dither_antialias(res->dither);
+        ret = enif_make_string(env, result, ERL_NIF_LATIN1);
+
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_antialias_list(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    ERL_NIF_TERM erl_map;
+    char const * const * list = NULL;
+    int count = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        list = caca_get_dither_antialias_list(res->dither);
+        if(!list) return mk_error(env, "return_error");
+
+        if(list) {
+            erl_map = enif_make_new_map(env);
+
+            // The list actually is a key-value map, so I return a map.
+            for(count = 0; list[count] != NULL; count += 2) {
+                ERL_NIF_TERM key;
+                ERL_NIF_TERM val;
+
+                key = enif_make_string(env, list[count], ERL_NIF_LATIN1);
+                val = enif_make_string(env, list[count + 1], ERL_NIF_LATIN1);
+                if (!enif_make_map_put(env, erl_map, key, val, &erl_map)) {
+                    return mk_error(env, "map_error");
+                }
+            }
+
+            return(erl_map);
+        }
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_dither_color(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char *buffer = NULL;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_set_dither_color(res->dither, buffer);
+        if(buffer) free(buffer);
+
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    if(buffer) free(buffer);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_color(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char const *result = NULL;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_get_dither_color(res->dither);
+        ret = enif_make_string(env, result, ERL_NIF_LATIN1);
+
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_color_list(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    ERL_NIF_TERM erl_map;
+    char const * const * list = NULL;
+    int count = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        list = caca_get_dither_color_list(res->dither);
+        if(!list) return mk_error(env, "return_error");
+
+        if(list) {
+            erl_map = enif_make_new_map(env);
+
+            // The list actually is a key-value map, so I return a map.
+            for(count = 0; list[count] != NULL; count += 2) {
+                ERL_NIF_TERM key;
+                ERL_NIF_TERM val;
+
+                key = enif_make_string(env, list[count], ERL_NIF_LATIN1);
+                val = enif_make_string(env, list[count + 1], ERL_NIF_LATIN1);
+                if (!enif_make_map_put(env, erl_map, key, val, &erl_map)) {
+                    return mk_error(env, "map_error");
+                }
+            }
+
+            return(erl_map);
+        }
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_dither_charset(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char *buffer = NULL;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_set_dither_charset(res->dither, buffer);
+        if(buffer) free(buffer);
+
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    if(buffer) free(buffer);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_charset(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char const *result = NULL;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_get_dither_charset(res->dither);
+        ret = enif_make_string(env, result, ERL_NIF_LATIN1);
+
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_charset_list(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    ERL_NIF_TERM erl_map;
+    char const * const * list = NULL;
+    int count = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        list = caca_get_dither_charset_list(res->dither);
+        if(!list) return mk_error(env, "return_error");
+
+        if(list) {
+            erl_map = enif_make_new_map(env);
+
+            // The list actually is a key-value map, so I return a map.
+            for(count = 0; list[count] != NULL; count += 2) {
+                ERL_NIF_TERM key;
+                ERL_NIF_TERM val;
+
+                key = enif_make_string(env, list[count], ERL_NIF_LATIN1);
+                val = enif_make_string(env, list[count + 1], ERL_NIF_LATIN1);
+                if (!enif_make_map_put(env, erl_map, key, val, &erl_map)) {
+                    return mk_error(env, "map_error");
+                }
+            }
+
+            return(erl_map);
+        }
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_dither_algorithm(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char *buffer = NULL;
+    unsigned int length = 0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    // String in Erlang is a list, so try to get list length
+    if(!enif_get_list_length(env, argv[1], &length)) {
+        return enif_make_badarg(env);
+    }
+
+    if(length < 1) {
+        return enif_make_badarg(env);
+    }
+
+    buffer = (char *) malloc(sizeof(char) * length + 1);
+    if(!buffer) {
+        return mk_error(env, "no_memory");
+    }
+
+    (void)memset(buffer, '\0', length + 1);
+
+    if (enif_get_string(env, argv[1], buffer, length + 1, ERL_NIF_LATIN1) < 1)
+    {
+        if(buffer) free(buffer);
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_set_dither_algorithm(res->dither, buffer);
+        if(buffer) free(buffer);
+
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    if(buffer) free(buffer);
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_algorithm(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    char const *result = NULL;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_get_dither_algorithm(res->dither);
+        ret = enif_make_string(env, result, ERL_NIF_LATIN1);
+
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_algorithm_list(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    ERL_NIF_TERM erl_map;
+    char const * const * list = NULL;
+    int count = 0;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        list = caca_get_dither_algorithm_list(res->dither);
+        if(!list) return mk_error(env, "return_error");
+
+        if(list) {
+            erl_map = enif_make_new_map(env);
+
+            // The list actually is a key-value map, so I return a map.
+            for(count = 0; list[count] != NULL; count += 2) {
+                ERL_NIF_TERM key;
+                ERL_NIF_TERM val;
+
+                key = enif_make_string(env, list[count], ERL_NIF_LATIN1);
+                val = enif_make_string(env, list[count + 1], ERL_NIF_LATIN1);
+                if (!enif_make_map_put(env, erl_map, key, val, &erl_map)) {
+                    return mk_error(env, "map_error");
+                }
+            }
+
+            return(erl_map);
+        }
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 set_dither_contrast(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -4358,6 +4862,18 @@ static ErlNifFunc nif_funcs[] = {
     {"get_dither_gamma", 1, get_dither_gamma},
     {"set_dither_contrast", 2, set_dither_contrast},
     {"get_dither_contrast", 1, get_dither_contrast},
+    {"set_dither_antialias", 2, set_dither_antialias},
+    {"get_dither_antialias", 1, get_dither_antialias},
+    {"get_dither_antialias_list", 1, get_dither_antialias_list},
+    {"set_dither_color", 2, set_dither_color},
+    {"get_dither_color", 1, get_dither_color},
+    {"get_dither_color_list", 1, get_dither_color_list},
+    {"set_dither_charset", 2, set_dither_charset},
+    {"get_dither_charset", 1, get_dither_charset},
+    {"get_dither_charset_list", 1, get_dither_charset_list},
+    {"set_dither_algorithm", 2, set_dither_algorithm},
+    {"get_dither_algorithm", 1, get_dither_algorithm},
+    {"get_dither_algorithm_list", 1, get_dither_algorithm_list},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},
