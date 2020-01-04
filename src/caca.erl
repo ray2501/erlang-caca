@@ -29,7 +29,7 @@
 -export([refresh_display/1, get_display_time/1, set_display_time/2]).
 -export([get_display_width/1, get_display_height/1, set_display_title/2]).
 -export([set_mouse/2, set_cursor/2]).
--export([create_event/0, free_event/1]).
+-export([create_event/0, free_event/1, get_event/4]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1, render_canvas/6]).
 -on_load(init/0).
 
@@ -595,6 +595,13 @@ create_event() ->
 -spec free_event(Event::reference()) -> ok | {error, any()}.
 
 free_event(_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the next mouse or keyboard input event
+-spec get_event(Display::reference(), Mask::integer(), Event::reference(), Timeout::integer()) -> 
+    ok | {error, any()}.
+
+get_event(_,_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use

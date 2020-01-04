@@ -3470,6 +3470,54 @@ free_event(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+get_event(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *dis;
+    CACA *evt;
+    int mask = 0;
+    int timeout = 0;
+
+    if(argc != 4)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &dis))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(dis->display == NULL) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &mask))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[2], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event == NULL) {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &timeout))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(dis->display && evt->event) {
+        caca_get_event(dis->display, mask, evt->event, timeout);
+    }
+
+    return mk_atom(env, "ok");
+}
+
+static ERL_NIF_TERM
 load_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_font_t *font = NULL;
@@ -3759,6 +3807,7 @@ static ErlNifFunc nif_funcs[] = {
     {"set_cursor", 2, set_cursor},
     {"create_event", 0, create_event},
     {"free_event", 1, free_event},
+    {"get_event", 4, get_event, ERL_NIF_DIRTY_JOB_CPU_BOUND},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},
