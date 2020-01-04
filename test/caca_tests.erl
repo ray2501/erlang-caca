@@ -401,3 +401,11 @@ create_dither_test() ->
 				 16#ff00, 16#ff0000, 16#ff000000, 16#ff),
     ?assertEqual(ok, caca:free_dither(Dither)).
 
+set_dither_brightness_test() ->
+    {ok, Dither} = caca:create_dither(32, 80, 40, 320, 
+				 16#ff00, 16#ff0000, 16#ff000000, 16#ff),
+
+    caca:set_dither_brightness(Dither, 5.0),
+    ?assertEqual(5.0, caca:get_dither_brightness(Dither)),
+    caca:free_dither(Dither).
+

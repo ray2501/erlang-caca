@@ -33,7 +33,7 @@
 -export([get_event_type/1, get_event_key_ch/1, get_event_key_utf32/1, get_event_key_utf8/1]).
 -export([get_event_mouse_button/1, get_event_mouse_x/1, get_event_mouse_y/1]).
 -export([get_event_resize_width/1, get_event_resize_height/1]).
--export([create_dither/8, free_dither/1]).
+-export([create_dither/8, free_dither/1, set_dither_brightness/2, get_dither_brightness/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1, render_canvas/6]).
 -on_load(init/0).
 
@@ -675,6 +675,18 @@ create_dither(_,_,_,_,_,_,_,_) ->
 -spec free_dither(Dither::reference()) ->  ok | {error, any()}.
 
 free_dither(_) ->
+    not_loaded(?LINE).
+
+%% @doc Set the brightness of a dither object
+-spec set_dither_brightness(Dither::reference(), Value::float()) ->  ok | {error, any()}.
+
+set_dither_brightness(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the brightness of a dither object
+-spec get_dither_brightness(Dither::reference()) ->  float() | {error, any()}.
+
+get_dither_brightness(_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use
