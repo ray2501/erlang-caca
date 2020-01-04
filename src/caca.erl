@@ -33,6 +33,7 @@
 -export([get_event_type/1, get_event_key_ch/1, get_event_key_utf32/1, get_event_key_utf8/1]).
 -export([get_event_mouse_button/1, get_event_mouse_x/1, get_event_mouse_y/1]).
 -export([get_event_resize_width/1, get_event_resize_height/1]).
+-export([create_dither/8, free_dither/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1, render_canvas/6]).
 -on_load(init/0).
 
@@ -659,6 +660,21 @@ get_event_resize_width(_) ->
 -spec get_event_resize_height(Event::reference()) -> integer() | {error, any()}.
 
 get_event_resize_height(_) ->
+    not_loaded(?LINE).
+
+%% @doc Create an internal dither object
+-spec create_dither(Bpp::integer(), Width::integer(), Height::integer(),
+                    Pitch::integer(), Rmask::integer(), Gmask::integer(), 
+                    Bmask::integer(), Amask::integer()) -> 
+    {ok, reference()} | {error, any()}.
+
+create_dither(_,_,_,_,_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Free the memory associated with a dither
+-spec free_dither(Dither::reference()) ->  ok | {error, any()}.
+
+free_dither(_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use

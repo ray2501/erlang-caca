@@ -396,3 +396,8 @@ create_event_test() ->
     {ok, E} = caca:create_event(),
     ?assertEqual(ok, caca:free_event(E)).
 
+create_dither_test() ->
+    {ok, Dither} = caca:create_dither(32, 80, 40, 320, 
+				 16#ff00, 16#ff0000, 16#ff000000, 16#ff),
+    ?assertEqual(ok, caca:free_dither(Dither)).
+

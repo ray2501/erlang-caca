@@ -13,6 +13,7 @@ typedef struct {
     caca_display_t *display;
     caca_font_t *font;
     caca_event_t *event;
+    caca_dither_t *dither;
 } CACA;
 
 ERL_NIF_TERM
@@ -274,6 +275,7 @@ create_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     res->display = NULL;
     res->font = NULL;
     res->event = NULL;
+    res->dither = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -2883,6 +2885,7 @@ create_display_0(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     res->display = NULL;
     res->font = NULL;
     res->event = NULL;
+    res->dither = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -2923,6 +2926,7 @@ create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     res->display = NULL;
     res->font = NULL;
     res->event = NULL;
+    res->dither = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -2993,6 +2997,7 @@ create_display_with_driver(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     res->display = NULL;
     res->font = NULL;
     res->event = NULL;
+    res->dither = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -3136,6 +3141,7 @@ get_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         res->display = NULL;
         res->font = NULL;
         res->event = NULL;
+        res->dither = NULL;
 
         ret = enif_make_resource(env, res);
         enif_release_resource(res);
@@ -3434,6 +3440,7 @@ create_event(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     res->display = NULL;
     res->font = NULL;
     res->event = NULL;
+    res->dither = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -3755,6 +3762,111 @@ get_event_resize_height(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+create_dither(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    caca_dither_t *dither = NULL;
+    int bpp = 0, w = 0, h = 0, pitch = 0;
+    uint32_t rmask = 0, gmask = 0, bmask = 0, amask = 0;
+    CACA* res;
+    ERL_NIF_TERM ret;
+
+    if(argc != 8)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[0], &bpp))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[1], &w))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[2], &w))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[3], &pitch))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[4], &rmask))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[5], &gmask))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[6], &bmask))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_uint(env, argv[7], &amask))
+    {
+        return enif_make_badarg(env);
+    }
+
+    dither = caca_create_dither(bpp, w, h, pitch, rmask, gmask, bmask, amask);
+    if(!dither) {
+        return mk_error(env, "function_error");
+    }
+
+    res = enif_alloc_resource(RES_TYPE, sizeof(CACA));
+    if(res == NULL) {
+        return mk_error(env, "alloc_error");
+    }
+    res->canvas = NULL;
+    res->display = NULL;
+    res->font = NULL;
+    res->event = NULL;
+    res->dither = NULL;
+
+    ret = enif_make_resource(env, res);
+    enif_release_resource(res);
+
+    res->dither = dither;
+    return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
+}
+
+static ERL_NIF_TERM
+free_dither(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither == NULL) {
+        return enif_make_badarg(env);
+    }
+
+    // If it is not NULL, then free it.
+    if(res->dither) {
+        caca_free_dither(res->dither);
+        res->dither = NULL;
+        assert(res->font == NULL);
+    }
+
+    return mk_atom(env, "ok");
+}
+
+static ERL_NIF_TERM
 load_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_font_t *font = NULL;
@@ -3805,6 +3917,7 @@ load_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     res->display = NULL;
     res->font = NULL;
     res->event = NULL;
+    res->dither = NULL;
 
     ret = enif_make_resource(env, res);
     enif_release_resource(res);
@@ -4054,6 +4167,8 @@ static ErlNifFunc nif_funcs[] = {
     {"get_event_mouse_y", 1, get_event_mouse_y},
     {"get_event_resize_width", 1, get_event_resize_width},
     {"get_event_resize_height", 1, get_event_resize_height},
+    {"create_dither", 8, create_dither},
+    {"free_dither", 1, free_dither},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},
