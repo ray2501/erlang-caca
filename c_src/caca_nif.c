@@ -3928,6 +3928,128 @@ get_dither_brightness(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+set_dither_gamma(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    double value = 0.0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_double(env, argv[1], &value))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_set_dither_gamma(res->dither, (float) value);
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_gamma(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    double value = 0.0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        value = caca_get_dither_gamma(res->dither);
+        ret = enif_make_double(env, value);
+
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+set_dither_contrast(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    double value = 0.0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_double(env, argv[1], &value))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_set_dither_contrast(res->dither, (float) value);
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_contrast(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    double value = 0.0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        value = caca_get_dither_contrast(res->dither);
+        ret = enif_make_double(env, value);
+
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 load_font(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     caca_font_t *font = NULL;
@@ -4232,6 +4354,10 @@ static ErlNifFunc nif_funcs[] = {
     {"free_dither", 1, free_dither},
     {"set_dither_brightness", 2, set_dither_brightness},
     {"get_dither_brightness", 1, get_dither_brightness},
+    {"set_dither_gamma", 2, set_dither_gamma},
+    {"get_dither_gamma", 1, get_dither_gamma},
+    {"set_dither_contrast", 2, set_dither_contrast},
+    {"get_dither_contrast", 1, get_dither_contrast},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},

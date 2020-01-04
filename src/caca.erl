@@ -34,6 +34,7 @@
 -export([get_event_mouse_button/1, get_event_mouse_x/1, get_event_mouse_y/1]).
 -export([get_event_resize_width/1, get_event_resize_height/1]).
 -export([create_dither/8, free_dither/1, set_dither_brightness/2, get_dither_brightness/1]).
+-export([set_dither_gamma/2, get_dither_gamma/1, set_dither_contrast/2, get_dither_contrast/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1, render_canvas/6]).
 -on_load(init/0).
 
@@ -687,6 +688,30 @@ set_dither_brightness(_,_) ->
 -spec get_dither_brightness(Dither::reference()) ->  float() | {error, any()}.
 
 get_dither_brightness(_) ->
+    not_loaded(?LINE).
+
+%% @doc Set the gamma of a dither object
+-spec set_dither_gamma(Dither::reference(), Value::float()) ->  ok | {error, any()}.
+
+set_dither_gamma(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the gamma of a dither object
+-spec get_dither_gamma(Dither::reference()) ->  float() | {error, any()}.
+
+get_dither_gamma(_) ->
+    not_loaded(?LINE).
+
+%% @doc Set the contrast of a dither object
+-spec set_dither_contrast(Dither::reference(), Value::float()) ->  ok | {error, any()}.
+
+set_dither_contrast(_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Get the contrast of a dither object
+-spec get_dither_contrast(Dither::reference()) ->  float() | {error, any()}.
+
+get_dither_contrast(_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use
