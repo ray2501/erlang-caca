@@ -392,3 +392,7 @@ set_handle_test() ->
     ?assertEqual(ok, caca:free_display(D)),
     ?assertEqual(ok, caca:free_canvas(R)).
 
+create_event_test() ->
+    {ok, E} = caca:create_event(),
+    ?assertEqual(ok, caca:free_event(E)).
+
