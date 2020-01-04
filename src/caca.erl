@@ -30,6 +30,9 @@
 -export([get_display_width/1, get_display_height/1, set_display_title/2]).
 -export([set_mouse/2, set_cursor/2]).
 -export([create_event/0, free_event/1, get_event/4]).
+-export([get_event_type/1, get_event_key_ch/1, get_event_key_utf32/1, get_event_key_utf8/1]).
+-export([get_event_mouse_button/1, get_event_mouse_x/1, get_event_mouse_y/1]).
+-export([get_event_resize_width/1, get_event_resize_height/1]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1, render_canvas/6]).
 -on_load(init/0).
 
@@ -602,6 +605,60 @@ free_event(_) ->
     ok | {error, any()}.
 
 get_event(_,_,_,_) ->
+    not_loaded(?LINE).
+
+%% @doc Return an event's type
+-spec get_event_type(Event::reference()) -> integer() | {error, any()}.
+
+get_event_type(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a key press or key release event's value
+-spec get_event_key_ch(Event::reference()) -> integer() | {error, any()}.
+
+get_event_key_ch(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a key press or key release event's Unicode value
+-spec get_event_key_utf32(Event::reference()) -> integer() | {error, any()}.
+
+get_event_key_utf32(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a key press or key release event's UTF-8 value
+-spec get_event_key_utf8(Event::reference()) -> string() | {error, any()}.
+
+get_event_key_utf8(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a mouse press or mouse release event's button
+-spec get_event_mouse_button(Event::reference()) -> integer() | {error, any()}.
+
+get_event_mouse_button(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a mouse motion event's X coordinate
+-spec get_event_mouse_x(Event::reference()) -> integer() | {error, any()}.
+
+get_event_mouse_x(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a mouse motion event's Y coordinate
+-spec get_event_mouse_y(Event::reference()) -> integer() | {error, any()}.
+
+get_event_mouse_y(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a mouse motion event's Y coordinate
+-spec get_event_resize_width(Event::reference()) -> integer() | {error, any()}.
+
+get_event_resize_width(_) ->
+    not_loaded(?LINE).
+
+%% @doc Return a mouse motion event's Y coordinate
+-spec get_event_resize_height(Event::reference()) -> integer() | {error, any()}.
+
+get_event_resize_height(_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use

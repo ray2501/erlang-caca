@@ -3424,6 +3424,8 @@ create_event(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         return mk_error(env, "no_memory");
     }
 
+    (void)memset(event, 0x00, sizeof(caca_event_t));
+
     res = enif_alloc_resource(RES_TYPE, sizeof(CACA));
     if(res == NULL) {
         return mk_error(env, "alloc_error");
@@ -3515,6 +3517,241 @@ get_event(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     }
 
     return mk_atom(env, "ok");
+}
+
+static ERL_NIF_TERM
+get_event_type(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        result = (int) caca_get_event_type(evt->event);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_event_key_ch(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        result = caca_get_event_key_ch(evt->event);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_event_key_utf32(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    uint32_t result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        result = caca_get_event_key_utf32(evt->event);
+        ret = enif_make_uint(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_event_key_utf8(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    char utf8[7];
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        caca_get_event_key_utf8(evt->event, utf8);
+        ret = enif_make_string(env, utf8, ERL_NIF_LATIN1);
+
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_event_mouse_button(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        result = caca_get_event_mouse_button(evt->event);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_event_mouse_x(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        result = caca_get_event_mouse_x(evt->event);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_event_mouse_y(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        result = caca_get_event_mouse_y(evt->event);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_event_resize_width(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        result = caca_get_event_resize_width(evt->event);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_event_resize_height(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *evt;
+    int result = 0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &evt))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(evt->event) {
+        result = caca_get_event_resize_height(evt->event);
+        ret = enif_make_int(env, result);
+        return ret;
+    }
+
+    return mk_error(env, "error");
 }
 
 static ERL_NIF_TERM
@@ -3808,6 +4045,15 @@ static ErlNifFunc nif_funcs[] = {
     {"create_event", 0, create_event},
     {"free_event", 1, free_event},
     {"get_event", 4, get_event, ERL_NIF_DIRTY_JOB_CPU_BOUND},
+    {"get_event_type", 1, get_event_type},
+    {"get_event_key_ch", 1, get_event_key_ch},
+    {"get_event_key_utf32", 1, get_event_key_utf32},
+    {"get_event_key_utf8", 1, get_event_key_utf8},
+    {"get_event_mouse_button", 1, get_event_mouse_button},
+    {"get_event_mouse_x", 1, get_event_mouse_x},
+    {"get_event_mouse_y", 1, get_event_mouse_y},
+    {"get_event_resize_width", 1, get_event_resize_width},
+    {"get_event_resize_height", 1, get_event_resize_height},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},
