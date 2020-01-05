@@ -1,5 +1,6 @@
 -module(caca_tests).
 -include_lib("eunit/include/eunit.hrl").
+-include("caca.hrl").
 
 create_canvas_fail_1_test() ->
     ?_assertException(error, function_clause, caca:create_canvas(-1, 0)).
@@ -66,10 +67,20 @@ put_attr_test() ->
     caca:free_display(D),
     caca:free_canvas(R).
 
+set_attr_test() ->
+    {ok, R} = caca:create_canvas(0, 0),
+    {ok, D} = caca:create_display(R),
+    caca:set_canvas_size(R, 80, 40),
+    ?assertEqual(ok, caca:set_attr(R, ?UNDERLINE)),
+    caca:put_str(R, 11, 6, "Hello Erlang"),
+    caca:refresh_display(D),
+    caca:free_display(D),
+    caca:free_canvas(R).
+
 blit_test() ->
     {ok, R} = caca:create_canvas(80, 40),
     {ok, D} = caca:create_display(R),
-    caca:set_color_ansi(R, 16#1, 16#E),
+    caca:set_color_ansi(R, ?BLUE, ?YELLOW),
     caca:put_str(R, 1, 1, "Hello Erlang"),
     caca:draw_line(R, 10, 10, 20, 20, 16#2B),
     {ok, Src} = caca:create_canvas(60, 30),
@@ -85,12 +96,12 @@ blit_2_test() ->
     {ok, D} = caca:create_display(R),
     caca:draw_line(R, 10, 10, 20, 20, 16#2B),
     {ok, Src} = caca:create_canvas(60, 30),
-    caca:set_color_ansi(Src, 16#B, 16#3),
+    caca:set_color_ansi(Src, ?LIGHTCYAN, ?CYAN),
     caca:draw_polyline(Src, [1, 40, 20, 40], [40, 1, 20, 40], 16#2B),
     {ok, Mask} = caca:create_canvas(60, 30),
-    caca:set_color_ansi(Mask, 16#1, 16#E),
+    caca:set_color_ansi(Mask, ?BLUE, ?YELLOW),
     caca:clear_canvas(Mask),
-    caca:set_color_ansi(Mask, 16#F, 16#F),
+    caca:set_color_ansi(Mask, ?WHITE, ?WHITE),
     caca:draw_thin_box(Mask, 20, 20, 25, 25),
     ?assertEqual(ok, caca:blit(R, 20, 10, Src, Mask)),
     caca:refresh_display(D),
@@ -101,7 +112,7 @@ blit_2_test() ->
 
 set_canvas_boundaries_test() ->
     {ok, R} = caca:create_canvas(80, 40),
-    caca:set_color_ansi(R, 16#1, 16#E),
+    caca:set_color_ansi(R, ?BLUE, ?YELLOW),
     caca:put_str(R, 20, 10, "Hello Erlang"),
     ?assertEqual(ok, caca:set_canvas_boundaries(R, 10, 5, 60, 30)),
     caca:free_canvas(R).
@@ -302,6 +313,7 @@ create_display_fail_test() ->
 create_display_0_test() ->
     {ok, D} = caca:create_display(),
     {ok, R} =  caca:get_canvas(D),
+    caca:set_color_ansi(R, ?RED, ?LIGHTGREEN),
     ?assertEqual(ok, caca:free_display(D)).
 
 create_display_test() ->
