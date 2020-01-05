@@ -30,7 +30,7 @@ It is an Erlang bindings for libcaca.
 make
 
 %install
-for dir in ebin priv ; do
+for dir in ebin include priv ; do
 	mkdir -p %{buildroot}%{erlang_libdir}/%{app_name}-%{app_ver}/${dir}
 	cp -r ${dir}/* %{buildroot}%{erlang_libdir}/%{app_name}-%{app_ver}/${dir}/
 done
@@ -42,6 +42,8 @@ done
 %dir %{erlang_libdir}/%{app_name}-%{app_ver}/ebin
 %{erlang_libdir}/%{app_name}-%{app_ver}/ebin/*.app
 %{erlang_libdir}/%{app_name}-%{app_ver}/ebin/*.beam
+%dir %{erlang_libdir}/%{app_name}-%{app_ver}/include
+%{erlang_libdir}/%{app_name}-%{app_ver}/include/*.hrl
 %dir %{erlang_libdir}/%{app_name}-%{app_ver}/priv
 %{erlang_libdir}/%{app_name}-%{app_ver}/priv/*.so
 
