@@ -422,3 +422,16 @@ set_dither_contrast_test() ->
     ?assertEqual(15.0, caca:get_dither_contrast(Dither)),
     caca:free_dither(Dither).
 
+dither_bitmap_test() ->
+    {ok, C} = caca:create_canvas(8, 2),
+    {ok, F} = caca:load_font(lists:nth(1, caca:get_font_list())),
+    W = caca:get_canvas_width(C) * caca:get_font_width(F),
+    H = caca:get_canvas_height(C) * caca:get_font_height(F),
+    Size = 4 * W * H,
+    Bin = binary:copy(list_to_binary([16#0]), Size),
+    {ok, Dither} = caca:create_dither(32, 80, 40, 320,
+                                 16#ff00, 16#ff0000, 16#ff000000, 16#ff),
+    ?assertEqual(ok, caca:dither_bitmap(C, 0, 0, W, H, Dither, Bin)),
+    caca:free_font(F),
+    caca:free_canvas(C).
+

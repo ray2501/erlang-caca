@@ -3989,6 +3989,67 @@ get_dither_gamma(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
+set_dither_contrast(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    double value = 0.0;
+    int result = 0;
+
+    if(argc != 2)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_double(env, argv[1], &value))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        result = caca_set_dither_contrast(res->dither, (float) value);
+        if(result < 0) {
+            return mk_error(env, "function_error");
+        }
+
+        return mk_atom(env, "ok");
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
+get_dither_contrast(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+{
+    CACA *res;
+    double value = 0.0;
+    ERL_NIF_TERM ret;
+
+    if(argc != 1)
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(res->dither) {
+        value = caca_get_dither_contrast(res->dither);
+        ret = enif_make_double(env, value);
+
+        return ret;
+    }
+
+    return mk_error(env, "error");
+}
+
+static ERL_NIF_TERM
 set_dither_antialias(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
     CACA *res;
@@ -4493,61 +4554,56 @@ get_dither_algorithm_list(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 }
 
 static ERL_NIF_TERM
-set_dither_contrast(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
+dither_bitmap(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 {
-    CACA *res;
-    double value = 0.0;
-    int result = 0;
+    CACA *cas;
+    CACA *dit;
+    int x = 0, y = 0, w = 0, h = 0;
+    ErlNifBinary buf = {0};
 
-    if(argc != 2)
+    if(argc != 7)
     {
         return enif_make_badarg(env);
     }
 
-    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
+    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &cas))
     {
         return enif_make_badarg(env);
     }
 
-    if (!enif_get_double(env, argv[1], &value))
+    if (!enif_get_int(env, argv[1], &x))
     {
         return enif_make_badarg(env);
     }
 
-    if(res->dither) {
-        result = caca_set_dither_contrast(res->dither, (float) value);
-        if(result < 0) {
-            return mk_error(env, "function_error");
-        }
+    if (!enif_get_int(env, argv[2], &y))
+    {
+        return enif_make_badarg(env);
+    }
 
+    if (!enif_get_int(env, argv[3], &w))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_get_int(env, argv[4], &h))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(!enif_get_resource(env, argv[5], RES_TYPE, (void **) &dit))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if (!enif_inspect_binary(env, argv[6], &buf))
+    {
+        return enif_make_badarg(env);
+    }
+
+    if(cas->canvas && dit->dither) {
+        caca_dither_bitmap(cas->canvas, x, y, w, h, dit->dither, buf.data);
         return mk_atom(env, "ok");
-    }
-
-    return mk_error(env, "error");
-}
-
-static ERL_NIF_TERM
-get_dither_contrast(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
-{
-    CACA *res;
-    double value = 0.0;
-    ERL_NIF_TERM ret;
-
-    if(argc != 1)
-    {
-        return enif_make_badarg(env);
-    }
-
-    if(!enif_get_resource(env, argv[0], RES_TYPE, (void **) &res))
-    {
-        return enif_make_badarg(env);
-    }
-
-    if(res->dither) {
-        value = caca_get_dither_contrast(res->dither);
-        ret = enif_make_double(env, value);
-
-        return ret;
     }
 
     return mk_error(env, "error");
@@ -4874,6 +4930,7 @@ static ErlNifFunc nif_funcs[] = {
     {"set_dither_algorithm", 2, set_dither_algorithm},
     {"get_dither_algorithm", 1, get_dither_algorithm},
     {"get_dither_algorithm_list", 1, get_dither_algorithm_list},
+    {"dither_bitmap", 7, dither_bitmap},
     {"load_font", 1, load_font},
     {"get_font_width", 1, get_font_width},
     {"get_font_height", 1, get_font_height},

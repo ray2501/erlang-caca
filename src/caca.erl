@@ -39,6 +39,7 @@
 -export([set_dither_color/2, get_dither_color/1, get_dither_color_list/1]).
 -export([set_dither_charset/2, get_dither_charset/1, get_dither_charset_list/1]).
 -export([set_dither_algorithm/2, get_dither_algorithm/1, get_dither_algorithm_list/1]).
+-export([dither_bitmap/7]).
 -export([load_font/1, get_font_width/1, get_font_height/1, free_font/1, render_canvas/6]).
 -on_load(init/0).
 
@@ -788,6 +789,14 @@ get_dither_algorithm(_) ->
 -spec get_dither_algorithm_list(Dither::reference()) ->  list(string) | {error, any()}.
 
 get_dither_algorithm_list(_) ->
+    not_loaded(?LINE).
+
+%% @doc Dither a bitmap on the canvas
+-spec dither_bitmap(Canvas::reference(), X::integer(), Y::integer(),
+                    W::integer(), H::integer(), Dither::reference(), 
+                    Pixels::binary()) ->  ok | {error, any()}.
+
+dither_bitmap(_,_,_,_,_,_,_) ->
     not_loaded(?LINE).
 
 %% @doc Load a font from memory for future use
