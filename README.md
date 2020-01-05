@@ -2,7 +2,6 @@ erlang-caca
 =====
 
 It is an Erlang bindings for [libcaca](http://caca.zoy.org/wiki/libcaca).
-Now this project is at an early development stage.
 
 
 Build

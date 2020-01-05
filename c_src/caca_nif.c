@@ -281,7 +281,6 @@ create_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     enif_release_resource(res);
 
     res->canvas = canvas;
-
     return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
 }
 
@@ -836,7 +835,7 @@ set_color_ansi(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     if(res->canvas) {
         result = caca_set_color_ansi(res->canvas, (uint8_t) fg, (uint8_t) bg);
         if (result < 0) {
-            return mk_error(env, "alloc_error");
+            return mk_error(env, "function_error");
         }
 
         return mk_atom(env, "ok");
@@ -883,7 +882,7 @@ set_color_argb(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     if(res->canvas) {
         result = caca_set_color_argb(res->canvas, (uint16_t) fg, (uint16_t) bg);
         if (result < 0) {
-            return mk_error(env, "alloc_error");
+            return mk_error(env, "function_error");
         }
 
         return mk_atom(env, "ok");
@@ -2767,7 +2766,6 @@ export_canvas_to_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
         memcpy(result_bin.data, buffer, buffer_length);
         result = enif_make_binary(env, &result_bin);
-
         return result;
     }
 
@@ -2856,7 +2854,6 @@ export_area_to_memory(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
 
         memcpy(result_bin.data, buffer, buffer_length);
         result = enif_make_binary(env, &result_bin);
-
         return result;
     }
 
@@ -2891,7 +2888,6 @@ create_display_0(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     enif_release_resource(res);
 
     res->display = display;
-
     return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
 }
 
@@ -2932,7 +2928,6 @@ create_display(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
     enif_release_resource(res);
 
     res->display = display;
-
     return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
 }
 
@@ -3147,7 +3142,6 @@ get_canvas(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
         enif_release_resource(res);
 
         res->canvas = canvas;
-
         return enif_make_tuple2(env, mk_atom(env, "ok"), ret);
     }
 
